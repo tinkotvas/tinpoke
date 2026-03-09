@@ -1,0 +1,287 @@
+/* Minimal reset - Ant Design handles most styling */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Dynamic body background based on theme */
+html[data-theme="dark"], 
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root {
+  background: #0F0C0A;
+}
+
+html[data-theme="light"], 
+html[data-theme="light"] body,
+html[data-theme="light"] #root {
+  background: #F1F8F1;
+}
+
+/* Default to dark if no attribute */
+html:not([data-theme]), 
+html:not([data-theme]) body,
+html:not([data-theme]) #root {
+  background: #0F0C0A;
+}
+
+/* Smooth transitions for theme switching */
+html, body, #root {
+  transition: background-color 0.3s ease;
+}
+
+/* Thin scrollbars - dark theme */
+html[data-theme="dark"] * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+html[data-theme="dark"] *::-webkit-scrollbar {
+  width: 4px;
+}
+
+html[data-theme="dark"] *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html[data-theme="dark"] *::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+}
+
+/* Thin scrollbars - light theme */
+html[data-theme="light"] * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.15) transparent;
+}
+
+html[data-theme="light"] *::-webkit-scrollbar {
+  width: 4px;
+}
+
+html[data-theme="light"] *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html[data-theme="light"] *::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+  border-radius: 2px;
+}
+
+/* Default scrollbar (dark) */
+html:not([data-theme]) * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+html:not([data-theme]) *::-webkit-scrollbar {
+  width: 4px;
+}
+
+html:not([data-theme]) *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html:not([data-theme]) *::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+}
+
+/* Shiny Pokemon - holographic card effect */
+.shiny-pokemon {
+  position: relative;
+  overflow: hidden;
+  border-color: #FFD700 !important;
+  border-left-color: #FFD700 !important;
+  box-shadow: 
+    0 0 8px rgba(255, 215, 0, 0.4), 
+    0 0 16px rgba(255, 215, 0, 0.2),
+    inset 0 0 20px rgba(255, 215, 0, 0.05);
+  animation: shiny-pulse 2s ease-in-out infinite;
+}
+
+@keyframes shiny-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 8px rgba(255, 215, 0, 0.4), 
+      0 0 16px rgba(255, 215, 0, 0.2),
+      inset 0 0 20px rgba(255, 215, 0, 0.05);
+  }
+  50% {
+    box-shadow: 
+      0 0 12px rgba(255, 215, 0, 0.5), 
+      0 0 24px rgba(255, 215, 0, 0.25),
+      inset 0 0 25px rgba(255, 215, 0, 0.08);
+  }
+}
+
+/* Light sweep across the card - extended to cover full card */
+.shiny-pokemon::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.3) 45%,
+    rgba(255, 215, 0, 0.25) 50%,
+    rgba(255, 255, 255, 0.3) 55%,
+    transparent 65%
+  );
+  animation: shiny-sweep 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Secondary rainbow shimmer overlay - extended to cover full card */
+.shiny-pokemon::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255, 100, 100, 0.08) 45%,
+    rgba(255, 215, 0, 0.1) 50%,
+    rgba(100, 255, 100, 0.08) 55%,
+    transparent 60%
+  );
+  animation: shiny-rainbow 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes shiny-sweep {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(50%); }
+}
+
+@keyframes shiny-rainbow {
+  0% { transform: translateX(50%); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Shiny star indicator */
+.shiny-indicator {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  font-size: 11px;
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.7));
+  z-index: 2;
+}
+
+/* Badge styling */
+.badge-icon {
+  transition: all 0.2s ease;
+}
+
+.badge-icon.earned {
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+.badge-icon.unearned {
+  opacity: 0.3;
+  filter: grayscale(1);
+}
+
+/* Pokemon card hover effects - GPU accelerated */
+.pokemon-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pokemon-card:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+
+.pokemon-card:hover:not(.shiny-pokemon) {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.pokemon-card:hover.shiny-pokemon {
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3), 0 0 6px rgba(255, 215, 0, 0.35);
+}
+
+.pokemon-card:focus {
+  outline: 2px solid;
+  outline-offset: 2px;
+}
+
+html[data-theme="dark"] .pokemon-card:focus {
+  outline-color: #FF6B4A;
+}
+
+html[data-theme="light"] .pokemon-card:focus {
+  outline-color: #4CAF50;
+}
+
+html:not([data-theme]) .pokemon-card:focus {
+  outline-color: #FF6B4A;
+}
+
+/* Badge card keyboard focus */
+.badge-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.badge-card:hover {
+  transform: translateY(-2px);
+}
+
+.badge-card:focus {
+  outline: 2px solid;
+  outline-offset: 2px;
+}
+
+html[data-theme="dark"] .badge-card:focus {
+  outline-color: #FF6B4A;
+}
+
+html[data-theme="light"] .badge-card:focus {
+  outline-color: #4CAF50;
+}
+
+/* Confetti animation - GPU accelerated */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Shiny toggle button hover effect */
+.shiny-toggle-btn:hover {
+  transform: scale(1.15);
+}
+
+/* VirtuosoGrid styles */
+[data-virtuoso-scroller] {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-content: flex-start;
+  gap: 8px;
+  padding: 8px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+[data-virtuoso-item] {
+  flex: 1 1 160px;
+  max-width: 220px;
+  min-width: 160px;
+  height: auto;
+}
+
