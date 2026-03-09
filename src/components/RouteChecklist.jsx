@@ -379,7 +379,7 @@ export default function RouteChecklist({ onSelectPokemon }) {
                 {route.name}
               </Text>
             </Flex>
-            <Tag color={caughtCount === pokemonData.length && pokemonData.length > 0 ? 'success' : 'default'}>
+            <Tag color={caughtCount === pokemonData.length ? 'success' : 'default'}>
               {caughtCount}/{pokemonData.length}
             </Tag>
           </Flex>

@@ -1,7 +1,8 @@
-import { memo, useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { memo, useState, useMemo, useRef, useCallback, useEffect, forwardRef } from 'react';
 import { FloatButton, Input, Flex, Typography, theme, Dropdown, Switch } from 'antd';
-import { AimOutlined } from '@ant-design/icons';
+
 import { useShallow } from 'zustand/react/shallow';
+import { VirtuosoGrid } from 'react-virtuoso';
 import { KANTO } from '../data/pokemon.js';
 import { ROUTES } from '../data/routes.js';
 import { useCaughtStore } from '../stores/caughtStore.js';
@@ -13,17 +14,49 @@ import { useSound } from '../hooks/useSound.js';
 
 const { Text } = Typography;
 
-const SPRITE_SIZE = 48;
+const SPRITE_SIZE = 70;
+const CARD_WIDTH = SPRITE_SIZE + 16;
 
-const PokemonMiniCard = memo(function PokemonMiniCard({ 
-  pokemon, 
-  isCaught, 
-  isShiny, 
+// VirtuosoGrid wrapper components
+const GridList = forwardRef(function GridList({ style, children, ...props }, ref) {
+  return (
+    <div
+      ref={ref}
+      {...props}
+      style={{
+        ...style,
+        display: 'flex',
+        flexWrap: 'wrap',
+      }}
+    >
+      {children}
+    </div>
+  );
+});
+
+const GridItem = memo(function GridItem({ children, ...props }) {
+  return (
+    <div
+      {...props}
+      style={{
+        flex: `1 0 ${CARD_WIDTH}px`,
+        maxWidth: CARD_WIDTH,
+      }}
+    >
+      {children}
+    </div>
+  );
+});
+
+const PokemonMiniCard = memo(function PokemonMiniCard({
+  pokemon,
+  isCaught,
+  isShiny,
   isInRoute,
-  onToggle 
+  onToggle
 }) {
   const { token } = theme.useToken();
-  
+
   const handleClick = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -44,10 +77,10 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
         padding: token.paddingXXS,
         cursor: 'pointer',
         borderRadius: token.borderRadiusSM,
-        background: isInRoute && !isCaught 
-          ? 'rgba(24, 144, 255, 0.15)' 
+        background: isInRoute && !isCaught
+          ? 'rgba(24, 144, 255, 0.15)'
           : 'transparent',
-        border: isInRoute && !isCaught 
+        border: isInRoute && !isCaught
           ? `1px solid ${token.colorPrimary}`
           : '1px solid transparent',
         transition: 'all 0.2s ease',
@@ -115,7 +148,7 @@ const QuickCatch = memo(function QuickCatch() {
   const searchInputRef = useRef(null);
 
   const { playCatch, playUncatch } = useSound();
-  
+
   const { caught, shiny, toggle } = useCaughtStore(useShallow((s) => ({
     caught: s.caught,
     shiny: s.shiny,
@@ -124,8 +157,11 @@ const QuickCatch = memo(function QuickCatch() {
 
   const selectedRouteIds = useRouteOverlayStore((s) => s.selectedRouteIds);
   const showControls = useControlsVisibilityStore((s) => s.showControls);
-  const zoneOrder = useZoneSortStore((s) => s.zoneOrder);
-  
+  const { zoneOrder, giftOnly } = useZoneSortStore(useShallow((s) => ({
+    zoneOrder: s.zoneOrder,
+    giftOnly: s.giftOnly,
+  })));
+
   const { showCaughtInQuickCatch, setShowCaughtInQuickCatch } = useSettingsStore(useShallow((s) => ({
     showCaughtInQuickCatch: s.showCaughtInQuickCatch,
     setShowCaughtInQuickCatch: s.setShowCaughtInQuickCatch,
@@ -154,7 +190,7 @@ const QuickCatch = memo(function QuickCatch() {
   // Build and sort Pokemon list
   const pokemonList = useMemo(() => {
     const q = search.toLowerCase();
-    
+
     // Filter by search
     let filtered = KANTO.filter(([id, name]) => {
       if (!q) return true;
@@ -166,7 +202,7 @@ const QuickCatch = memo(function QuickCatch() {
       const isCaught = caught.has(id);
       const isShiny = shiny?.has(id) || false;
       const isInRoute = routePokemonIds.has(id);
-      
+
       return {
         id,
         name,
@@ -182,17 +218,12 @@ const QuickCatch = memo(function QuickCatch() {
       list = list.filter((p) => !p.isCaught);
     }
 
-    // Sort: uncaught first, then in-route, then by zone position
     list.sort((a, b) => {
-      // Uncaught first
-      if (a.isCaught !== b.isCaught) {
-        return a.isCaught ? 1 : -1;
-      }
-      // In-route first (among same caught status)
-      if (a.isInRoute !== b.isInRoute) {
-        return a.isInRoute ? -1 : 1;
-      }
-      // Then by zone position (O(1) lookup)
+      if (a.isCaught !== b.isCaught) return a.isCaught ? 1 : -1;
+      if (a.isInRoute !== b.isInRoute) return a.isInRoute ? -1 : 1;
+      const aGift = giftOnly.has(a.id);
+      const bGift = giftOnly.has(b.id);
+      if (aGift !== bGift) return aGift ? 1 : -1;
       const aPos = zoneOrder.get(a.id) ?? Infinity;
       const bPos = zoneOrder.get(b.id) ?? Infinity;
       if (aPos !== bPos) return aPos - bPos;
@@ -200,7 +231,7 @@ const QuickCatch = memo(function QuickCatch() {
     });
 
     return list;
-  }, [search, caught, shiny, routePokemonIds, showCaughtInQuickCatch, zoneOrder]);
+  }, [search, caught, shiny, routePokemonIds, showCaughtInQuickCatch, zoneOrder, giftOnly]);
 
   // Count missing in routes
   const missingInRoutesCount = useMemo(() => {
@@ -288,29 +319,26 @@ const QuickCatch = memo(function QuickCatch() {
           allowClear
           size="small"
         />
-        
-        <Flex
-          wrap
-          gap={4}
-          style={{
-            maxHeight: 320,
-            overflowY: 'auto',
-            overflowX: 'hidden',
-          }}
-        >
-          {pokemonList.slice(0, 50).map((pokemon) => (
-            <PokemonMiniCard
-              key={pokemon.id}
-              pokemon={pokemon}
-              isCaught={pokemon.isCaught}
-              isShiny={pokemon.isShiny}
-              isInRoute={pokemon.isInRoute}
-              onToggle={handleToggle}
-            />
-          ))}
-        </Flex>
 
-        {pokemonList.length === 0 && (
+        {pokemonList.length > 0 ? (
+          <VirtuosoGrid
+            style={{ height: 320 }}
+            data={pokemonList}
+            itemContent={(index, pokemon) => (
+              <PokemonMiniCard
+                pokemon={pokemon}
+                isCaught={pokemon.isCaught}
+                isShiny={pokemon.isShiny}
+                isInRoute={pokemon.isInRoute}
+                onToggle={handleToggle}
+              />
+            )}
+            components={{
+              List: GridList,
+              Item: GridItem,
+            }}
+          />
+        ) : (
           <Text type="secondary" style={{ textAlign: 'center', padding: token.paddingSM }}>
             No Pokemon found
           </Text>
@@ -327,24 +355,21 @@ const QuickCatch = memo(function QuickCatch() {
       placement="topRight"
       destroyOnHidden={false}
       popupRender={() => dropdownContent}
+      transitionName=""
     >
       <FloatButton
-        icon={<AimOutlined />}
+        icon={<img src="./poke-ball.png" alt="" width={30} height={30} />}
         tooltip="Quick Catch"
-        badge={{
-          count: missingInRoutesCount > 0 ? missingInRoutesCount : 0,
-          color: token.colorPrimary,
-        }}
         style={{
           position: 'absolute',
           bottom: 52,
-          right: 16,
+          right: 12,
           opacity: visible ? 1 : 0,
           transition: 'opacity 0.3s ease',
           pointerEvents: visible ? 'auto' : 'none',
           zIndex: 100,
+          padding: 0,
         }}
-        type="primary"
       />
     </Dropdown>
   );
