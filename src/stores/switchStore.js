@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { createLocalStorage } from './storageHelpers.js';
 
 const STORAGE_KEY = 'pokedex-switch-store';
-const LEGACY_VOLUME_KEY = 'pokemon-filters'; // Volume/muted were stored in filter store
+const LEGACY_FILTER_STORE_KEY = 'pokemon-filters'; // switchVolume/switchMuted were previously stored in filter store
 
 export const useSwitchStore = create(
   persist(
@@ -40,7 +40,7 @@ export const useSwitchStore = create(
         // Try to migrate volume/muted from old filter store
         if (!persisted || (persisted.volume === undefined && persisted.muted === undefined)) {
           try {
-            const legacyFilters = localStorage.getItem(LEGACY_VOLUME_KEY);
+            const legacyFilters = localStorage.getItem(LEGACY_FILTER_STORE_KEY);
             if (legacyFilters) {
               const parsed = JSON.parse(legacyFilters);
               const migrated = {

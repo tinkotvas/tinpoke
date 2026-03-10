@@ -66,8 +66,16 @@ export function useShadowCast() {
 
   const teardown = useCallback(() => {
     intentionalStopRef.current = true;
-    if (rafvfcRef.current && videoRef.current?.cancelVideoFrameCallback) {
-      videoRef.current.cancelVideoFrameCallback(rafvfcRef.current);
+    // Cancel video frame callback if supported and active
+    if (rafvfcRef.current !== null) {
+      const videoEl = videoRef.current;
+      if (videoEl && typeof videoEl.cancelVideoFrameCallback === 'function') {
+        try {
+          videoEl.cancelVideoFrameCallback(rafvfcRef.current);
+        } catch {
+          // API may have changed or callback already cancelled
+        }
+      }
       rafvfcRef.current = null;
     }
     clearInterval(fpsIntervalRef.current);
@@ -218,7 +226,9 @@ export function useShadowCast() {
         setError('Capture device disconnected. Reconnect the device and try again.');
       });
 
-      if (videoEl.requestVideoFrameCallback) {
+      // Use requestVideoFrameCallback for accurate FPS if available
+      const hasVFC = typeof videoEl.requestVideoFrameCallback === 'function';
+      if (hasVFC) {
         frameCountRef.current = 0;
         fpsIntervalRef.current = setInterval(() => {
           fpsRef.current = frameCountRef.current;
@@ -227,7 +237,13 @@ export function useShadowCast() {
 
         const vfc = () => {
           frameCountRef.current++;
-          rafvfcRef.current = videoEl.requestVideoFrameCallback(vfc);
+          // Store the callback ID for cleanup
+          try {
+            rafvfcRef.current = videoEl.requestVideoFrameCallback(vfc);
+          } catch {
+            // Video element may have been removed
+            rafvfcRef.current = null;
+          }
         };
         rafvfcRef.current = videoEl.requestVideoFrameCallback(vfc);
       }

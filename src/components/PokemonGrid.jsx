@@ -1,6 +1,7 @@
 import { memo, useCallback, forwardRef } from 'react';
 import { Empty, Typography, theme } from 'antd';
 import { VirtuosoGrid } from 'react-virtuoso';
+import { useShallow } from 'zustand/react/shallow';
 import { useCaughtStore } from '../stores/caughtStore.js';
 import PokemonCard from './PokemonCard.jsx';
 
@@ -57,9 +58,11 @@ const GridItem = memo(function GridItem({ children, ...props }) {
 });
 
 export default function PokemonGrid({ pokemon, onToggle, onToggleShiny, onSelect }) {
-  // Read from store directly
-  const caught = useCaughtStore((s) => s.caught);
-  const shiny = useCaughtStore((s) => s.shiny);
+  // Read from store using useShallow for batched subscriptions
+  const { caught, shiny } = useCaughtStore(useShallow((s) => ({
+    caught: s.caught,
+    shiny: s.shiny,
+  })));
 
   const itemContent = useCallback((index, [id, name, types]) => (
     <PokemonCard
