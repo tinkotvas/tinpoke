@@ -125,7 +125,7 @@ function AppContent() {
     })));
   
   // Hooks
-  const { showConfetti } = useMilestones(caught.size);
+  const { showConfetti, contextHolder } = useMilestones(caught.size);
   const { playCatch, playUncatch, playShiny, playVictory } = useSound();
   
   // Local state
@@ -235,6 +235,7 @@ function AppContent() {
       }}
     >
       <AntApp>
+      {contextHolder}
       <Flex
         vertical
         style={{ height: '100vh', width: '100%', overflow: 'hidden' }}

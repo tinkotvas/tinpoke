@@ -10,6 +10,7 @@ const MILESTONE_THRESHOLDS = {
 };
 
 export function useMilestones(caughtCount) {
+  const [api, contextHolder] = notification.useNotification();
   const [showConfetti, setShowConfetti] = useState(false);
   
   // Read from store
@@ -17,7 +18,7 @@ export function useMilestones(caughtCount) {
   const markCelebrated = useMilestonesStore((s) => s.markCelebrated);
 
   const triggerCelebration = useCallback((milestone, data) => {
-    notification.success({
+    api.success({
       message: `${data.label} Complete!`,
       description: data.message,
       duration: 5,
@@ -26,7 +27,7 @@ export function useMilestones(caughtCount) {
 
     setShowConfetti(true);
     setTimeout(() => setShowConfetti(false), 3000);
-  }, []);
+  }, [api]);
 
   useEffect(() => {
     Object.entries(MILESTONE_THRESHOLDS).forEach(([milestone, data]) => {
@@ -38,5 +39,5 @@ export function useMilestones(caughtCount) {
     });
   }, [caughtCount, celebrated, markCelebrated, triggerCelebration]);
 
-  return { celebrated, showConfetti, MILESTONE_THRESHOLDS };
+  return { celebrated, showConfetti, MILESTONE_THRESHOLDS, contextHolder };
 }
