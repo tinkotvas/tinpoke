@@ -152,10 +152,6 @@ const RouteOverlay = memo(function RouteOverlay({ onSelectPokemon }) {
   // Don't render if no routes selected
   if (selectedRouteIds.size === 0) return null;
 
-  const headerText = overlayFilter === 'missing'
-    ? `${selectedRouteIds.size} route${selectedRouteIds.size > 1 ? 's' : ''} - ${pokemonList.length} missing`
-    : `${selectedRouteIds.size} route${selectedRouteIds.size > 1 ? 's' : ''} - ${pokemonList.length} total`;
-
   return (
     <Rnd
       position={{ x: overlayBounds.x, y: overlayBounds.y }}
@@ -201,9 +197,7 @@ const RouteOverlay = memo(function RouteOverlay({ onSelectPokemon }) {
             borderRadius: `${token.borderRadiusSM}px ${token.borderRadiusSM}px 0 0`,
           }}
         >
-          <Space size={4}>
-            <DragOutlined style={{ color: token.colorTextSecondary, fontSize: 10 }} />
-
+          <Flex wrap="wrap" align="center" gap={4}>
             <Button
               type="text"
               size="small"
@@ -211,11 +205,10 @@ const RouteOverlay = memo(function RouteOverlay({ onSelectPokemon }) {
               onClick={toggleOverlayFilter}
               style={{ fontSize: 10, padding: 0, minWidth: 20, height: 20 }}
             />
-
-            <Text type="secondary" style={{ fontSize: 10 }}>
-              {headerText}
+            <Text type="secondary" style={{ fontSize: 10, whiteSpace: 'nowrap' }}>
+              {pokemonList.length} {overlayFilter === 'missing' ? 'missing' : 'total'}
             </Text>
-          </Space>
+          </Flex>
 
           <Space size={2}>
             <Button
