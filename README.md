@@ -9,6 +9,8 @@
 
 Point your Switch capture card at the browser, mark Pokemon as caught, and track your progress — all in one screen.
 
+<img width="1513" height="790" alt="image" src="https://github.com/user-attachments/assets/032d2b1a-336f-4d29-a957-79c9c47a2807" />
+
 ---
 
 ## ✨ Features
