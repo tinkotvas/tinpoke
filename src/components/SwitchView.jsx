@@ -9,7 +9,7 @@ import {
   VideoCameraOutlined,
   AudioOutlined,
 } from '@ant-design/icons';
-import { useShadowCast } from '../hooks/useShadowCast.js';
+import { useCaptureDevice } from '../hooks/useCaptureDevice.js';
 import { useControlsVisibilityStore } from '../stores/controlsVisibilityStore.js';
 import QuickCatch from './QuickCatch.jsx';
 
@@ -69,7 +69,7 @@ const SwitchView = memo(function SwitchView() {
   const getShowControls = useControlsVisibilityStore((s) => s.getShowControls);
 
   const { status, error, resolution, availableResolutions, videoDevices, audioDevices, selectedVideoId, selectedAudioId, getFps, volume, muted, start, stop, switchDevice, setVolume, updateGainDirectly, toggleMute, applyResolution } =
-    useShadowCast();
+    useCaptureDevice();
 
   const [dragVolume, setDragVolume] = useState(volume);
   const isDragging = useRef(false);

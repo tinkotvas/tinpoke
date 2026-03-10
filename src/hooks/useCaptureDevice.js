@@ -27,7 +27,11 @@ async function enumerateUsableDevices() {
   return { video, audio };
 }
 
-export function useShadowCast() {
+/**
+ * Hook for capturing video/audio from any capture device (capture cards, webcams, etc.)
+ * Works with ShadowCast, Elgato, generic HDMI grabbers, and other capture hardware.
+ */
+export function useCaptureDevice() {
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState(null);
   const [resolution, setResolution] = useState(null);
