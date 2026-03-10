@@ -13,19 +13,13 @@ import TypeTag from './TypeTag.jsx';
 
 const { Title, Text } = Typography;
 
-// Stat colors are semantic (red=bad, green=good) - not from theme
-function getStatColor(value) {
-  if (value < 50) return '#ff4d4f';
-  if (value < 80) return '#fa8c16';
-  if (value < 100) return '#52c41a';
-  return '#1890ff';
+// Helper to get stat color from theme token
+function getStatColor(value, token) {
+  if (value < 50) return token.colorStatLow;
+  if (value < 80) return token.colorStatMedium;
+  if (value < 100) return token.colorStatGood;
+  return token.colorStatExcellent;
 }
-
-// Version colors are game-specific - not from theme
-const VERSION_COLORS = {
-  firered: '#FF4444',
-  leafgreen: '#2E8B3A',
-};
 
 const EvolutionStage = memo(function EvolutionStage({ 
   id, 
@@ -80,7 +74,7 @@ const EvolutionStage = memo(function EvolutionStage({
           ))}
         </Flex>
         {isCaught && (
-          <Text style={{ color: isShiny ? '#FFD700' : token.colorPrimary }}>
+          <Text style={{ color: isShiny ? token.colorShiny : token.colorPrimary }}>
             {isShiny ? '🌟' : '✓'}
           </Text>
         )}
@@ -263,7 +257,7 @@ const LocationTable = memo(function LocationTable({ pokemonId }) {
             style={{
               fontSize: token.fontSizeXS,
               fontWeight: token.fontWeightStrong,
-              color: version === 1 ? '#FF4444' : '#2E8B3A',
+              color: version === 1 ? token.colorVersionFireRed : token.colorVersionLeafGreen,
             }}
           >
             {version === 1 ? 'FR' : 'LG'}
@@ -314,11 +308,11 @@ const StatBars = memo(function StatBars({ pokemonId }) {
           <Progress
             percent={(value / maxStat) * 100}
             format={() => (
-              <Text style={{ color: getStatColor(value), fontWeight: token.fontWeightStrong }}>
+              <Text style={{ color: getStatColor(value, token), fontWeight: token.fontWeightStrong }}>
                 {value}
               </Text>
             )}
-            strokeColor={getStatColor(value)}
+            strokeColor={getStatColor(value, token)}
             railColor={token.colorBorder}
             size="small"
             style={{ flex: 1, minWidth: 100 }}
@@ -455,8 +449,8 @@ export default function PokemonDetail({
               <Tooltip title={isShiny ? 'Remove shiny' : 'Mark as shiny'}>
                 <Button
                   style={{
-                    background: isShiny ? '#FFD700' : undefined,
-                    borderColor: isShiny ? '#FFD700' : undefined,
+                    background: isShiny ? token.colorShiny : undefined,
+                    borderColor: isShiny ? token.colorShiny : undefined,
                     color: isShiny ? '#000' : undefined,
                   }}
                   icon={<StarFilled />}

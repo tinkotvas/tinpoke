@@ -1,11 +1,32 @@
 import { useCallback, memo, useMemo } from 'react';
 import { Typography, Flex, theme, Tooltip, message } from 'antd';
-import { TYPE_HEX_COLORS } from '../data/pokemon.js';
 import { useSettingsStore } from '../stores/settingsStore.js';
 import Sprite from './Sprite.jsx';
 import TypeTag from './TypeTag.jsx';
 
 const { Text } = Typography;
+
+// Map type names to theme token names
+const typeTokenMap = {
+  normal: 'colorTypeNormal',
+  fire: 'colorTypeFire',
+  water: 'colorTypeWater',
+  electric: 'colorTypeElectric',
+  grass: 'colorTypeGrass',
+  ice: 'colorTypeIce',
+  fighting: 'colorTypeFighting',
+  poison: 'colorTypePoison',
+  ground: 'colorTypeGround',
+  flying: 'colorTypeFlying',
+  psychic: 'colorTypePsychic',
+  bug: 'colorTypeBug',
+  rock: 'colorTypeRock',
+  ghost: 'colorTypeGhost',
+  dragon: 'colorTypeDragon',
+  dark: 'colorTypeDark',
+  steel: 'colorTypeSteel',
+  fairy: 'colorTypeFairy',
+};
 
 const PokemonMiniCard = memo(function PokemonMiniCard({
   id,
@@ -23,11 +44,12 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
   const isMini = size === 'mini';
   const spriteSize = isMini ? 44 : 80;
 
-  // Type accent color is custom per Pokemon type - not from theme
+  // Type accent color from theme tokens
   const typeAccentColor = useMemo(() => {
     const primaryType = types[0];
-    return TYPE_HEX_COLORS[primaryType] || '#888888';
-  }, [types]);
+    const tokenName = typeTokenMap[primaryType];
+    return token[tokenName] || token.colorBorder;
+  }, [types, token]);
 
   const handleShinyClick = useCallback((e) => {
     e.stopPropagation();
@@ -151,8 +173,8 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
               width: isMini ? 22 : 28,
               height: isMini ? 22 : 28,
               borderRadius: '50%',
-              background: isShiny ? '#FFD700' : token.colorBgElevated,
-              border: `1px solid ${isShiny ? '#FFD700' : token.colorBorder}`,
+              background: isShiny ? token.colorShiny : token.colorBgElevated,
+              border: `1px solid ${isShiny ? token.colorShiny : token.colorBorder}`,
               cursor: 'pointer',
               fontSize: isMini ? 11 : 14,
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
@@ -209,7 +231,7 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
         <Text
           style={{
             marginTop: token.paddingXXS,
-            color: isShiny ? '#FFD700' : token.colorTextTertiary,
+            color: isShiny ? token.colorShiny : token.colorTextTertiary,
           }}
         >
           {isShiny ? '🌟' : 'shift+🌟'}

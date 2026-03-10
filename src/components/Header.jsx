@@ -74,8 +74,8 @@ export default function Header({
           </Text>
 
         </Flex>
-        {/* Shiny - gold color is custom, not from theme */}
-        {shinyCount > 0 && <Text style={{ color: '#FFD700', whiteSpace: 'nowrap' }}>
+        {/* Shiny */}
+        {shinyCount > 0 && <Text style={{ color: token.colorShiny, whiteSpace: 'nowrap' }}>
           🌟 {shinyCount}
         </Text>}
 

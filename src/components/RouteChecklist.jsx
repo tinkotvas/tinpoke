@@ -10,12 +10,6 @@ import Sprite from './Sprite.jsx';
 
 const { Text, Title } = Typography;
 
-// Version colors are game-specific - not from theme
-const VERSION_COLORS = {
-  firered: '#FF4444',
-  leafgreen: '#2E8B3A',
-};
-
 const PokemonChip = memo(function PokemonChip({ id, name, types, isCaught, isShiny, onClick }) {
   const { token } = theme.useToken();
   const mode = useSettingsStore((s) => s.theme);
@@ -132,7 +126,7 @@ const SpecialPokemonCard = memo(function SpecialPokemonCard({ id, location, hint
             {isCaught && <Text style={{ color: token.colorPrimary }}>✓</Text>}
           </Flex>
           {version !== undefined && (
-            <Text strong style={{ color: version === 1 ? VERSION_COLORS.firered : VERSION_COLORS.leafgreen }}>
+            <Text strong style={{ color: version === 1 ? token.colorVersionFireRed : token.colorVersionLeafGreen }}>
               {version === 0 ? 'Both' : version === 1 ? 'FireRed' : 'LeafGreen'} only
             </Text>
           )}

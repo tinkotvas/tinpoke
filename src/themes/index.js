@@ -1,9 +1,59 @@
 import { theme } from 'antd';
 
+// Pokemon type colors - consistent across all themes
+const typeColors = {
+  colorTypeNormal: '#A8A878',
+  colorTypeFire: '#F08030',
+  colorTypeWater: '#6890F0',
+  colorTypeElectric: '#F8D030',
+  colorTypeGrass: '#78C850',
+  colorTypeIce: '#98D8D8',
+  colorTypeFighting: '#C03028',
+  colorTypePoison: '#A040A0',
+  colorTypeGround: '#E0C068',
+  colorTypeFlying: '#A890F0',
+  colorTypePsychic: '#F85888',
+  colorTypeBug: '#A8B820',
+  colorTypeRock: '#B8A038',
+  colorTypeGhost: '#705898',
+  colorTypeDragon: '#7038F8',
+  colorTypeDark: '#705848',
+  colorTypeSteel: '#B8B8D0',
+  colorTypeFairy: '#EE99AC',
+};
+
+// Stat colors - semantic (consistent across themes)
+const statColors = {
+  colorStatLow: '#ff4d4f',
+  colorStatMedium: '#fa8c16',
+  colorStatGood: '#52c41a',
+  colorStatExcellent: '#1890ff',
+};
+
+// Shiny color - gold (consistent across themes)
+const shinyColors = {
+  colorShiny: '#FFD700',
+};
+
+// Version colors - game specific (consistent across themes)
+const versionColors = {
+  colorVersionFireRed: '#FF4444',
+  colorVersionLeafGreen: '#2E8B3A',
+};
+
+// Combined custom tokens (same for both themes)
+const customTokens = {
+  ...typeColors,
+  ...statColors,
+  ...shinyColors,
+  ...versionColors,
+};
+
 // Fire Red (dark) theme palette
 export const fireRedTheme = {
   algorithm: theme.darkAlgorithm,
   token: {
+    ...customTokens,
     colorPrimary: '#FF6B4A',
     colorPrimaryHover: '#FF7D5E',
     colorPrimaryActive: '#E85539',
@@ -78,6 +128,7 @@ export const fireRedTheme = {
 export const leafGreenTheme = {
   algorithm: theme.defaultAlgorithm,
   token: {
+    ...customTokens,
     colorPrimary: '#4CAF50',
     colorPrimaryHover: '#43A047',
     colorPrimaryActive: '#388E3C',
