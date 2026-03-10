@@ -1,13 +1,10 @@
 import { memo } from 'react';
-import { Input, Button, Flex, theme } from 'antd';
-import { SearchOutlined, FilterOutlined } from '@ant-design/icons';
+import { Input, Flex, theme } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 const SearchBar = memo(function SearchBar({ 
   value, 
   onChange, 
-  showFilters, 
-  onToggleFilters, 
-  hasActiveFilters,
   placeholder = 'Search Pokémon...' 
 }) {
   const { token } = theme.useToken();
@@ -30,14 +27,6 @@ const SearchBar = memo(function SearchBar({
         size="large"
         style={{ flex: 1 }}
       />
-      <Button
-        type={showFilters || hasActiveFilters ? 'primary' : 'default'}
-        icon={<FilterOutlined />}
-        onClick={onToggleFilters}
-        size="small"
-      >
-        Filters
-      </Button>
     </Flex>
   );
 });

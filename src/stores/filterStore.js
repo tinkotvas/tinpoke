@@ -20,9 +20,6 @@ export const useFilterStore = create(
       selectedTypes: new Set(),
       setSelectedTypes: (selectedTypes) => set({ selectedTypes }),
 
-      showFilters: false,
-      setShowFilters: (showFilters) => set({ showFilters }),
-
       // Route expansion state (persisted for UX continuity)
       expandedRoutes: [],
       setExpandedRoutes: (expandedRoutes) => set({ expandedRoutes }),

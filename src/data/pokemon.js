@@ -15,7 +15,6 @@ export const TYPE_HEX_COLORS = {
   rock: '#B8A038',
   ghost: '#705898',
   dragon: '#7038F8',
-  dark: '#705848',
   steel: '#B8B8D0',
   fairy: '#EE99AC',
 };
@@ -37,7 +36,6 @@ export const TYPES = {
   rock: 'gold',
   ghost: 'purple',
   dragon: 'geekblue',
-  dark: 'default',
   steel: 'cyan',
   fairy: 'magenta',
 };
@@ -61,7 +59,6 @@ export const TYPE_ICONS = {
   rock: '🗻',
   ghost: '👻',
   dragon: '🐉',
-  dark: '🌑',
   steel: '⚙️',
   fairy: '✨',
 };

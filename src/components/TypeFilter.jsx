@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 import { Tag, Flex, theme } from 'antd';
 import { TYPES, getTypeIcon } from '../data/pokemon.js';
+import { CloseOutlined } from '@ant-design/icons';
 
 const TypeFilter = memo(function TypeFilter({ selectedTypes, onTypesChange }) {
   const { token } = theme.useToken();
@@ -23,11 +24,6 @@ const TypeFilter = memo(function TypeFilter({ selectedTypes, onTypesChange }) {
 
   return (
     <Flex vertical gap={token.paddingXS} style={{ padding: `${token.paddingXS}px ${token.paddingLG}px` }}>
-      {hasSelection && (
-        <Tag style={{ cursor: 'pointer', margin: 0 }} onClick={handleClearAll}>
-          Clear all
-        </Tag>
-      )}
       <Flex wrap="wrap" gap={token.paddingXXS}>
         {Object.keys(TYPES).map((type) => {
           const isSelected = selectedTypes.has(type);
@@ -48,6 +44,20 @@ const TypeFilter = memo(function TypeFilter({ selectedTypes, onTypesChange }) {
             </Tag>
           );
         })}
+        {hasSelection && (
+          <Tag
+            style={{
+              cursor: 'pointer',
+              margin: 0,
+              padding: `${token.paddingXXS}px ${token.paddingXS}px`,
+              whiteSpace: 'nowrap',
+            }}
+            variant="solid"
+            color="error"
+            onClick={handleClearAll}>
+            <CloseOutlined /> Clear all
+          </Tag>
+        )}
       </Flex>
     </Flex>
   );

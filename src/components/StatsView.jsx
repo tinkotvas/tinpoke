@@ -12,7 +12,7 @@ const TOTAL = 151;
 const ALL_TYPES = [
   'normal', 'fire', 'water', 'electric', 'grass', 'ice',
   'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
-  'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy',
+  'rock', 'ghost', 'dragon', 'steel', 'fairy',
 ];
 
 const TypeProgress = memo(function TypeProgress({ type, caught, total }) {
@@ -164,7 +164,7 @@ const StatCard = memo(function StatCard({ title, value, suffix, prefix, valueSty
         value={value}
         suffix={suffix}
         prefix={prefix}
-        valueStyle={valueStyle}
+        styles={{ content: valueStyle }}
       />
     </Card>
   );
@@ -172,7 +172,7 @@ const StatCard = memo(function StatCard({ title, value, suffix, prefix, valueSty
 
 export default function StatsView() {
   const { token } = theme.useToken();
-  
+
   // Read from stores directly
   const caught = useCaughtStore((s) => s.caught);
   const shiny = useCaughtStore((s) => s.shiny);
@@ -226,7 +226,7 @@ export default function StatsView() {
           <StatCard title="Shiny" value={stats.shinyCount} prefix="🌟" valueStyle={{ color: '#FFD700' }} />
           <StatCard title="Badges" value={stats.badgeCount} suffix="/ 8" valueStyle={{ color: token.colorPrimary }} />
         </Flex>
-        
+
         {/* Inline completion percentage */}
         <Flex align="center" gap={token.paddingLG}>
           <Progress type="circle" percent={stats.pct} size={80} />

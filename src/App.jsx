@@ -6,7 +6,7 @@ import { useCaughtStore } from './stores/caughtStore.js';
 import { useBadgeStore } from './stores/badgeStore.js';
 import { useSettingsStore } from './stores/settingsStore.js';
 import { useFilterStore } from './stores/filterStore.js';
-import { useMilestones } from './hooks/useMilestones.js';
+import { useNotifications } from './hooks/useNotifications.js';
 import { useSound } from './hooks/useSound.js';
 import { fireRedTheme, leafGreenTheme } from './themes/index.js';
 import Header from './components/Header.jsx';
@@ -110,7 +110,7 @@ function AppContent() {
       setSoundEnabled: s.setSoundEnabled,
     })));
   
-  const { filter, setFilter, statusFilter, setStatusFilter, sortBy, setSortBy, selectedTypes, setSelectedTypes, showFilters, setShowFilters } = 
+  const { filter, setFilter, statusFilter, setStatusFilter, sortBy, setSortBy, selectedTypes, setSelectedTypes } = 
     useFilterStore(useShallow((s) => ({
       filter: s.filter,
       setFilter: s.setFilter,
@@ -120,12 +120,10 @@ function AppContent() {
       setSortBy: s.setSortBy,
       selectedTypes: s.selectedTypes,
       setSelectedTypes: s.setSelectedTypes,
-      showFilters: s.showFilters,
-      setShowFilters: s.setShowFilters,
     })));
   
   // Hooks
-  const { showConfetti, contextHolder } = useMilestones(caught.size);
+  const { showConfetti, contextHolder } = useNotifications(caught.size, badges);
   const { playCatch, playUncatch, playShiny, playVictory } = useSound();
   
   // Local state
@@ -225,8 +223,6 @@ function AppContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const hasActiveFilters = selectedTypes.size > 0 || sortBy !== 'dex';
-
   return (
     <ConfigProvider 
       theme={currentTheme}
@@ -309,21 +305,16 @@ function AppContent() {
               <SearchBar 
                 value={search} 
                 onChange={setSearch} 
-                showFilters={showFilters}
-                onToggleFilters={() => setShowFilters(prev => !prev)}
-                hasActiveFilters={hasActiveFilters}
               />
 
-              {showFilters && (
-                <FilterPanel
-                  sortBy={sortBy}
-                  onSortChange={setSortBy}
-                  selectedTypes={selectedTypes}
-                  onTypesChange={setSelectedTypes}
-                  statusFilter={statusFilter}
-                  onStatusChange={setStatusFilter}
-                />
-              )}
+              <FilterPanel
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                selectedTypes={selectedTypes}
+                onTypesChange={setSelectedTypes}
+                statusFilter={statusFilter}
+                onStatusChange={setStatusFilter}
+              />
 
               <div style={{ flex: 1, minHeight: 0 }}>
                 <PokemonGrid 
