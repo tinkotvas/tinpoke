@@ -13,7 +13,8 @@ Point your Switch capture card at the browser, mark Pokemon as caught, and track
 
 ## ✨ Features
 
-| 🎮 Switch Feed | Live video from USB capture card or camera |
+| 🎮 Video Feed | Live video from USB capture card or camera |
+|---|---|
 | ⚡ Quick Catch | Floating overlay to mark catches without leaving gameplay |
 | 🗺️ Routes | Every FRLG area from Pallet Town to Cerulean Cave + Sevii Islands |
 | 📋 Route Overlay | Draggable, resizable panel showing Pokemon on your current route |
