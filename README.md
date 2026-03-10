@@ -53,7 +53,7 @@ Produces a single self-contained HTML file in `dist/` via `vite-plugin-singlefil
 
 | Action | Input |
 |---|---|
-| Catch / Release | `Shift + Click` |
+| Catch | `Shift + Click` |
 | Toggle Shiny | `Shift + Click` on a caught Pokemon |
 | Open Details | `Enter` or click |
 | Quick Catch Search | Type in overlay, `Enter` catches first match |
