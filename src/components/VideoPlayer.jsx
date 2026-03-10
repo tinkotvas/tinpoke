@@ -1,5 +1,5 @@
 import { memo, useRef, useCallback, useState, useEffect, useMemo } from 'react';
-import { Flex, Button, Slider, Select, Typography, theme } from 'antd';
+import { Flex, Button, Slider, Select, Typography, theme, Segmented, Popover, InputNumber, Space } from 'antd';
 import {
   PlayCircleOutlined,
   PauseCircleOutlined,
@@ -8,9 +8,14 @@ import {
   MutedOutlined,
   VideoCameraOutlined,
   AudioOutlined,
+  AlignLeftOutlined,
+  AlignCenterOutlined,
+  AlignRightOutlined,
+  ScissorOutlined,
 } from '@ant-design/icons';
 import { useCaptureDevice } from '../hooks/useCaptureDevice.js';
 import { useControlsVisibilityStore } from '../stores/controlsVisibilityStore.js';
+import { useSwitchStore } from '../stores/switchStore.js';
 import QuickCatch from './QuickCatch.jsx';
 
 const { Text } = Typography;
@@ -24,10 +29,24 @@ const STATUS_LABELS = {
   stopped: 'Stopped',
 };
 
-const createVideoStyle = (token) => ({
+const ALIGNMENT_OPTIONS = [
+  { value: 'left',   icon: <AlignLeftOutlined /> },
+  { value: 'center', icon: <AlignCenterOutlined /> },
+  { value: 'right',  icon: <AlignRightOutlined /> },
+];
+
+const OBJECT_POSITION = {
+  left:   'left center',
+  center: 'center center',
+  right:  'right center',
+};
+
+const createVideoStyle = (token, alignment, crop) => ({
   width: '100%',
   height: '100%',
   objectFit: 'contain',
+  objectPosition: OBJECT_POSITION[alignment] ?? 'center center',
+  objectViewBox: `inset(${crop.top}px ${crop.right}px ${crop.bottom}px ${crop.left}px)`,
   display: 'block',
   willChange: 'transform',
   imageRendering: 'pixelated',
@@ -57,16 +76,75 @@ const FpsDisplay = memo(function FpsDisplay({ getFps, showControls, resolution }
   return <>{` @ ${fps}fps`}</>;
 });
 
-const SwitchView = memo(function SwitchView() {
+const CropPopover = memo(function CropPopover({ crop, setCrop, resetCrop }) {
+  const labelStyle = { color: 'rgba(255,255,255,0.65)', fontSize: 12, width: 44 };
+  const inputStyle = { width: 72 };
+
+  const content = (
+    <div style={{ padding: '4px 0' }}>
+      <Space direction="vertical" size={8}>
+        {['top', 'bottom', 'left', 'right'].map((side) => (
+          <Flex key={side} align="center" gap={8}>
+            <span style={labelStyle}>{side.charAt(0).toUpperCase() + side.slice(1)}</span>
+            <InputNumber
+              size="small"
+              min={0}
+              max={1000}
+              step={1}
+              value={crop[side]}
+              onChange={(v) => setCrop({ [side]: v ?? 0 })}
+              suffix="px"
+              style={inputStyle}
+            />
+          </Flex>
+        ))}
+        <Button size="small" onClick={resetCrop} block>
+          Reset crop
+        </Button>
+      </Space>
+    </div>
+  );
+
+  const hasCrop = crop.top > 0 || crop.right > 0 || crop.bottom > 0 || crop.left > 0;
+
+  return (
+    <Popover
+      content={content}
+      title="Crop"
+      trigger="click"
+      placement="top"
+    >
+      <Button
+        icon={<ScissorOutlined />}
+        size="small"
+        style={{
+          background: hasCrop ? 'rgba(255,200,0,0.25)' : 'rgba(255,255,255,0.1)',
+          color: hasCrop ? '#ffc800' : '#fff',
+          border: 'none',
+        }}
+        title="Crop video"
+      />
+    </Popover>
+  );
+});
+
+const VideoPlayer = memo(function VideoPlayer() {
   const { token } = theme.useToken();
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const hideTimeoutRef = useRef(null);
-  
-  // Use shared visibility store
+
+  // Shared visibility store
   const showControls = useControlsVisibilityStore((s) => s.showControls);
   const setShowControls = useControlsVisibilityStore((s) => s.setShowControls);
   const getShowControls = useControlsVisibilityStore((s) => s.getShowControls);
+
+  // Video display settings
+  const alignment = useSwitchStore((s) => s.alignment);
+  const crop = useSwitchStore((s) => s.crop);
+  const setAlignment = useSwitchStore((s) => s.setAlignment);
+  const setCrop = useSwitchStore((s) => s.setCrop);
+  const resetCrop = useSwitchStore((s) => s.resetCrop);
 
   const { status, error, resolution, availableResolutions, videoDevices, audioDevices, selectedVideoId, selectedAudioId, getFps, volume, muted, start, stop, switchDevice, setVolume, updateGainDirectly, toggleMute, applyResolution } =
     useCaptureDevice();
@@ -161,7 +239,7 @@ const SwitchView = memo(function SwitchView() {
     statusText = error;
   }
 
-  const videoStyle = useMemo(() => createVideoStyle(token), [token]);
+  const videoStyle = useMemo(() => createVideoStyle(token, alignment, crop), [token, alignment, crop]);
   const containerStyle = useMemo(() => createContainerStyle(token), [token]);
 
   return (
@@ -327,6 +405,22 @@ const SwitchView = memo(function SwitchView() {
           />
         )}
 
+        {/* Alignment toggle */}
+        {isStreaming && (
+          <Segmented
+            size="small"
+            value={alignment}
+            onChange={setAlignment}
+            options={ALIGNMENT_OPTIONS}
+            style={{ background: 'rgba(255,255,255,0.1)' }}
+          />
+        )}
+
+        {/* Crop popover */}
+        {isStreaming && (
+          <CropPopover crop={crop} setCrop={setCrop} resetCrop={resetCrop} />
+        )}
+
         {/* Status text */}
         {statusText && (
           <Text
@@ -357,10 +451,10 @@ const SwitchView = memo(function SwitchView() {
         />
       </Flex>
 
-      {/* Quick Catch button - above fullscreen */}
+      {/* Quick Catch button */}
       <QuickCatch />
     </Flex>
   );
 });
 
-export default SwitchView;
+export default VideoPlayer;

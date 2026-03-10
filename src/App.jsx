@@ -20,7 +20,7 @@ import Confetti from './components/Confetti.jsx';
 import RouteChecklist from './components/RouteChecklist.jsx';
 import RouteOverlay from './components/RouteOverlay.jsx';
 import StatsView from './components/StatsView.jsx';
-import SwitchView from './components/SwitchView.jsx';
+import VideoPlayer from './components/VideoPlayer.jsx';
 
 const { Text, Title } = Typography;
 
@@ -255,9 +255,9 @@ function AppContent() {
           />
         )}
 
-        {/* SwitchView - always visible as base layer */}
+        {/* VideoPlayer - always visible as base layer */}
         <Flex vertical flex={1} style={{ overflow: 'hidden' }}>
-          <SwitchView />
+          <VideoPlayer />
         </Flex>
 
         {/* Theater mode exit button */}
