@@ -451,7 +451,7 @@ export default function PokemonDetail({
                   style={{
                     background: isShiny ? token.colorShiny : undefined,
                     borderColor: isShiny ? token.colorShiny : undefined,
-                    color: isShiny ? '#000' : undefined,
+                    color: isShiny ? token.colorBgLayout : undefined,
                   }}
                   icon={<StarFilled />}
                   onClick={handleToggleShiny}

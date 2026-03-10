@@ -1,13 +1,11 @@
 import { useMemo, memo } from 'react';
 import { Flex, Typography, Progress, Statistic, Card, theme, Timeline, Tooltip } from 'antd';
 import { KANTO, KANTO_MAP, getTypeIcon } from '../data/pokemon.js';
-import { formatShortDate } from '../utils/pokemon.js';
+import { formatShortDate, KANTO_TOTAL } from '../utils/pokemon.js';
 import { useCaughtStore } from '../stores/caughtStore.js';
 import { useBadgeStore } from '../stores/badgeStore.js';
 
 const { Text, Title } = Typography;
-
-const TOTAL = 151;
 
 const ALL_TYPES = [
   'normal', 'fire', 'water', 'electric', 'grass', 'ice',
@@ -181,10 +179,10 @@ export default function StatsView() {
 
   const stats = useMemo(() => {
     const caughtCount = caught.size;
-    const missingCount = TOTAL - caughtCount;
+    const missingCount = KANTO_TOTAL - caughtCount;
     const shinyCount = shiny?.size || 0;
     const badgeCount = badges?.size || 0;
-    const pct = Math.round((caughtCount / TOTAL) * 100);
+    const pct = Math.round((caughtCount / KANTO_TOTAL) * 100);
 
     // Type breakdown
     const typeStats = new Map();
@@ -221,9 +219,9 @@ export default function StatsView() {
       {/* Top Row: Quick Stats */}
       <Flex gap={token.paddingMD} wrap="wrap" justify="space-between">
         <Flex gap={token.paddingSM}>
-          <StatCard title="Caught" value={stats.caughtCount} suffix={`/ ${TOTAL}`} valueStyle={{ color: token.colorPrimary }} />
+          <StatCard title="Caught" value={stats.caughtCount} suffix={`/ ${KANTO_TOTAL}`} valueStyle={{ color: token.colorPrimary }} />
           <StatCard title="Missing" value={stats.missingCount} valueStyle={{ color: token.colorTextSecondary }} />
-          <StatCard title="Shiny" value={stats.shinyCount} prefix="🌟" valueStyle={{ color: '#FFD700' }} />
+          <StatCard title="Shiny" value={stats.shinyCount} prefix="🌟" valueStyle={{ color: token.colorShiny }} />
           <StatCard title="Badges" value={stats.badgeCount} suffix="/ 8" valueStyle={{ color: token.colorPrimary }} />
         </Flex>
 

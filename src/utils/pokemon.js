@@ -1,6 +1,19 @@
 /**
- * Pokémon-related utility functions.
+ * Pokémon-related utility functions and constants.
  */
+
+// Total number of Pokémon in Kanto Pokédex
+export const KANTO_TOTAL = 151;
+
+// Standard sprite sizes used across components
+export const SPRITE_SIZE = {
+  MINI: 20,      // Tiny sprites in lists/overlays
+  SMALL: 24,     // Small sprites in timelines
+  DEFAULT: 48,   // Default size for cards
+  MEDIUM: 70,    // QuickCatch cards
+  LARGE: 72,     // RouteOverlay cards
+  DETAIL: 96,    // PokemonDetail drawer
+};
 
 /**
  * Format a timestamp as a human-readable date string.

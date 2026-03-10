@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { App as AntApp, ConfigProvider, Flex, Modal, Typography, theme } from 'antd';
 import { useShallow } from 'zustand/react/shallow';
 import { KANTO } from './data/pokemon.js';
+import { KANTO_TOTAL } from './utils/pokemon.js';
 import { useCaughtStore } from './stores/caughtStore.js';
 import { useBadgeStore } from './stores/badgeStore.js';
 import { useSettingsStore } from './stores/settingsStore.js';
@@ -22,7 +23,6 @@ import StatsView from './components/StatsView.jsx';
 import SwitchView from './components/SwitchView.jsx';
 
 const { Text, Title } = Typography;
-const TOTAL = 151;
 
 function TheaterModeExit({ onExit }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -207,7 +207,7 @@ function AppContent() {
   }, [toggleShiny, playShiny]);
 
   useEffect(() => {
-    if (caught.size === TOTAL && prevCaughtCountRef.current < TOTAL) {
+    if (caught.size === KANTO_TOTAL && prevCaughtCountRef.current < KANTO_TOTAL) {
       playVictory();
     }
     prevCaughtCountRef.current = caught.size;
@@ -240,7 +240,7 @@ function AppContent() {
           <Header 
             caught={caught.size} 
             shiny={shiny} 
-            total={TOTAL} 
+            total={KANTO_TOTAL} 
             badges={badges} 
             onImport={handleImport} 
             caughtMap={caught}

@@ -25,7 +25,7 @@ const PokemonSprite = memo(function PokemonSprite({ id, name, isCaught, isShiny,
   const { token } = theme.useToken();
   const mode = useSettingsStore((s) => s.theme);
 
-  const primaryColor = token.colorPrimary || '#1890ff';
+  const primaryColor = token.colorPrimary;
 
   return (
     <div

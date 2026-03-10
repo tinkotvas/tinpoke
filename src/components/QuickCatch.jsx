@@ -73,12 +73,12 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
       justify="center"
       onClick={handleClick}
       style={{
-        width: SPRITE_SIZE + 16,
+        width: SPRITE_SIZE,
         padding: token.paddingXXS,
         cursor: 'pointer',
         borderRadius: token.borderRadiusSM,
         background: isInRoute && !isCaught
-          ? 'rgba(24, 144, 255, 0.15)'
+          ? `${token.colorPrimary}26`
           : 'transparent',
         border: isInRoute && !isCaught
           ? `1px solid ${token.colorPrimary}`

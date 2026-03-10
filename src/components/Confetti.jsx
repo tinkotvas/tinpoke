@@ -1,12 +1,20 @@
 import { memo, useEffect, useState } from 'react';
 import { theme } from 'antd';
 
-const confettiColors = ['#FF4444', '#FFD700', '#2E8B3A', '#4169E1', '#FF69B4', '#00CED1'];
+// Use theme-based colors for confetti
+const getConfettiColors = (token) => [
+  token.colorVersionFireRed,
+  token.colorShiny,
+  token.colorVersionLeafGreen,
+  token.colorStatExcellent,
+  token.colorTypePsychic,
+  token.colorTypeIce,
+];
 
-function createConfettiPieces(count) {
+function createConfettiPieces(count, colors) {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
-    color: confettiColors[i % confettiColors.length],
+    color: colors[i % colors.length],
     left: Math.random() * 100,
     delay: Math.random() * 0.5,
     duration: 2 + Math.random() * 1,
@@ -40,11 +48,12 @@ export default function Confetti({ show }) {
 
   useEffect(() => {
     if (show) {
-      setPieces(createConfettiPieces(50));
+      const colors = getConfettiColors(token);
+      setPieces(createConfettiPieces(50, colors));
       const timer = setTimeout(() => setPieces([]), 3500);
       return () => clearTimeout(timer);
     }
-  }, [show]);
+  }, [show, token]);
 
   if (!show && pieces.length === 0) return null;
 

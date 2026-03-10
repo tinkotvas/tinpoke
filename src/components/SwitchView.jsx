@@ -24,23 +24,23 @@ const STATUS_LABELS = {
   stopped: 'Stopped',
 };
 
-const VIDEO_STYLE = {
+const createVideoStyle = (token) => ({
   width: '100%',
   height: '100%',
   objectFit: 'contain',
   display: 'block',
   willChange: 'transform',
   imageRendering: 'pixelated',
-  background: '#000',
-};
+  background: token.colorBgLayout,
+});
 
-const CONTAINER_STYLE = {
+const createContainerStyle = (token) => ({
   height: '100%',
-  background: '#000',
+  background: token.colorBgLayout,
   position: 'relative',
   overflow: 'hidden',
   contain: 'layout paint',
-};
+});
 
 const FpsDisplay = memo(function FpsDisplay({ getFps, showControls, resolution }) {
   const [fps, setFps] = useState(null);
@@ -161,18 +161,21 @@ const SwitchView = memo(function SwitchView() {
     statusText = error;
   }
 
+  const videoStyle = useMemo(() => createVideoStyle(token), [token]);
+  const containerStyle = useMemo(() => createContainerStyle(token), [token]);
+
   return (
     <Flex
       ref={containerRef}
       vertical
-      style={CONTAINER_STYLE}
+      style={containerStyle}
     >
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted
-        style={VIDEO_STYLE}
+        style={videoStyle}
       />
 
       {!isStreaming && (
@@ -193,7 +196,7 @@ const SwitchView = memo(function SwitchView() {
           )}
 
           {isLoading && (
-            <Text style={{ color: '#fff', fontSize: 15 }}>{statusText}</Text>
+            <Text style={{ color: token.colorText, fontSize: 15 }}>{statusText}</Text>
           )}
 
           {status === 'error' && (
