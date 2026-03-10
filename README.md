@@ -111,3 +111,13 @@ Use the settings modal to export/import your save data.
 ---
 
 Made by and for Pokemon fans.
+
+## License
+
+The code is released under the [MIT License](LICENSE) — do whatever you want with it.
+
+---
+
+## Disclaimer
+
+Pokémon and all related names, characters, and imagery are trademarks of Nintendo, Game Freak, and The Pokémon Company. Pokémon sprites used in this project are the property of their respective owners. This project is unofficial, non-commercial, and not affiliated with or endorsed by Nintendo, Game Freak, or The Pokémon Company in any way.
