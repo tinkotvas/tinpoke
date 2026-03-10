@@ -248,9 +248,9 @@ const QuickCatch = memo(function QuickCatch() {
     const wasCaught = useCaughtStore.getState().caught.has(id);
     toggle(id);
     if (wasCaught) {
-      playUncatch();
+      playUncatch(id);
     } else {
-      playCatch();
+      playCatch(id);
     }
   }, [toggle, playCatch, playUncatch]);
 

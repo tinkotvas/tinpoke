@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { useSettingsStore } from '../stores/settingsStore.js';
+import { playCry } from '../utils/pokemonCrySynth.js';
 
 export function useSound() {
   const audioContextRef = useRef(null);
@@ -19,71 +20,39 @@ export function useSound() {
     setEnabledState(value);
   }, [setEnabledState]);
 
-  const playTone = useCallback((frequency, duration, type = 'sine', volume = 0.3) => {
+  /**
+   * Play a Pokémon's cry when caught
+   * @param {number} pokedexId - Pokémon ID (1-151)
+   */
+  const playCatch = useCallback((pokedexId) => {
     if (!enabled) return;
     
     try {
       const ctx = getAudioContext();
-      const oscillator = ctx.createOscillator();
-      const gainNode = ctx.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(ctx.destination);
-      
-      oscillator.type = type;
-      oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
-      
-      gainNode.gain.setValueAtTime(volume, ctx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-      
-      oscillator.start(ctx.currentTime);
-      oscillator.stop(ctx.currentTime + duration);
+      playCry(ctx, pokedexId, 0.6);
     } catch {
       // Audio not supported or blocked
     }
   }, [enabled, getAudioContext]);
 
-  const playCatch = useCallback(() => {
+  /**
+   * Play a faded/reversed Pokémon cry when released
+   * @param {number} pokedexId - Pokémon ID (1-151)
+   */
+  const playUncatch = useCallback((pokedexId) => {
     if (!enabled) return;
+    
     try {
       const ctx = getAudioContext();
-      const now = ctx.currentTime;
-      
-      // Two ascending tones
-      const osc1 = ctx.createOscillator();
-      const gain1 = ctx.createGain();
-      osc1.connect(gain1);
-      gain1.connect(ctx.destination);
-      osc1.type = 'sine';
-      osc1.frequency.setValueAtTime(523, now); // C5
-      gain1.gain.setValueAtTime(0.25, now);
-      gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-      osc1.start(now);
-      osc1.stop(now + 0.08);
-      
-      const osc2 = ctx.createOscillator();
-      const gain2 = ctx.createGain();
-      osc2.connect(gain2);
-      gain2.connect(ctx.destination);
-      osc2.type = 'sine';
-      osc2.frequency.setValueAtTime(659, now + 0.06); // E5
-      gain2.gain.setValueAtTime(0.3, now + 0.06);
-      gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-      osc2.start(now + 0.06);
-      osc2.stop(now + 0.15);
+      playCry(ctx, pokedexId, 0.5, { reversed: true });
     } catch {
-      // Audio not supported
+      // Audio not supported or blocked
     }
   }, [enabled, getAudioContext]);
 
-  const playUncatch = useCallback(() => {
-    if (!enabled) return;
-    playTone(330, 0.12, 'sine', 0.2); // Descending tone
-    setTimeout(() => {
-      playTone(262, 0.1, 'sine', 0.15);
-    }, 50);
-  }, [enabled, playTone]);
-
+  /**
+   * Play shiny sparkle sound
+   */
   const playShiny = useCallback(() => {
     if (!enabled) return;
     try {
@@ -109,6 +78,9 @@ export function useSound() {
     }
   }, [enabled, getAudioContext]);
 
+  /**
+   * Play victory fanfare
+   */
   const playVictory = useCallback(() => {
     if (!enabled) return;
     try {

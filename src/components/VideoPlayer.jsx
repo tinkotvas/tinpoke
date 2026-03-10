@@ -82,7 +82,7 @@ const CropPopover = memo(function CropPopover({ crop, setCrop, resetCrop }) {
 
   const content = (
     <div style={{ padding: '4px 0' }}>
-      <Space direction="vertical" size={8}>
+      <Space orientation="vertical" size={8}>
         {['top', 'bottom', 'left', 'right'].map((side) => (
           <Flex key={side} align="center" gap={8}>
             <span style={labelStyle}>{side.charAt(0).toUpperCase() + side.slice(1)}</span>

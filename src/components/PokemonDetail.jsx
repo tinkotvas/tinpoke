@@ -8,6 +8,7 @@ import { STATS, STAT_LABELS } from '../data/stats.js';
 import { formatCaughtDate } from '../utils/pokemon.js';
 import { useCaughtStore } from '../stores/caughtStore.js';
 import { useSettingsStore } from '../stores/settingsStore.js';
+import { useSound } from '../hooks/useSound.js';
 import Sprite from './Sprite.jsx';
 import TypeTag from './TypeTag.jsx';
 
