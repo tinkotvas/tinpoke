@@ -1,6 +1,7 @@
 node_modules
 dist/
 public/sprites/
+docs/
 
 # Dependencies
 package-lock.json

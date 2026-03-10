@@ -1,6 +1,6 @@
 import { useMemo, memo } from 'react';
-import { Flex, Typography, Progress, Statistic, Card, theme, Timeline, Tooltip } from 'antd';
-import { KANTO, KANTO_MAP, getTypeIcon } from '../data/pokemon.js';
+import { Flex, Typography, Progress, Statistic, Card, theme, Timeline, Tooltip, Tag, Row, Col } from 'antd';
+import { KANTO, KANTO_MAP, getTypeIcon, TYPES } from '../data/pokemon.js';
 import { formatShortDate, KANTO_TOTAL } from '../utils/pokemon.js';
 import { useCaughtStore } from '../stores/caughtStore.js';
 import { useBadgeStore } from '../stores/badgeStore.js';
@@ -25,76 +25,64 @@ const LEGENDARIES = [144, 145, 146];
 const MYTHICAL = [150, 151];
 const FOSSILS = [138, 139, 140, 141, 142];
 
-// Compact Type Progress Card
-const TypeMiniCard = memo(function TypeMiniCard({ type, caught, total }) {
-  const { token } = theme.useToken();
+// Type Tag with progress
+const TypeTag = memo(function TypeTag({ type, caught, total }) {
   const pct = total > 0 ? Math.round((caught / total) * 100) : 0;
   const isComplete = caught === total;
 
   return (
     <Tooltip title={`${type}: ${caught}/${total} (${pct}%)`}>
-      <Flex
-        align="center"
-        gap={4}
-        style={{
-          padding: `${token.paddingXXS}px ${token.paddingXS}px`,
-          borderRadius: token.borderRadiusSM,
-          background: isComplete ? `${token.colorSuccess}15` : undefined,
-          border: `1px solid ${isComplete ? `${token.colorSuccess}40` : token.colorBorder}`,
-          minWidth: 65,
+      <Tag
+        color={isComplete ? 'success' : TYPES[type]}
+        variant={isComplete ? 'solid' : 'outlined'}
+        style={{ 
+          margin: 0,
+          opacity: caught > 0 ? 1 : 0.4,
         }}
       >
-        <span style={{ fontSize: 12 }}>{getTypeIcon(type)}</span>
-        <Text style={{ fontSize: 11, textTransform: 'capitalize', color: isComplete ? token.colorSuccess : undefined }}>
+        <span>{getTypeIcon(type)}</span>
+        <Text style={{ marginLeft: 6, color: 'inherit' }}>
           {caught}/{total}
         </Text>
-        {isComplete && <Text style={{ fontSize: 10, color: token.colorSuccess }}>✓</Text>}
-      </Flex>
+        {isComplete && <Text style={{ marginLeft: 6 }}>✓</Text>}
+      </Tag>
     </Tooltip>
   );
 });
 
-// Type Breakdown Grid (compact)
+// Type Breakdown Grid using Tags
 const TypeBreakdownGrid = memo(function TypeBreakdownGrid({ typeStats }) {
-  const { token } = theme.useToken();
-
   return (
-    <Flex wrap="wrap" gap={token.paddingXXS}>
+    <Flex wrap="wrap" gap="small">
       {ALL_TYPES.map((type) => {
         const stat = typeStats.get(type);
-        return <TypeMiniCard key={type} type={type} caught={stat.caught} total={stat.total} />;
+        return <TypeTag key={type} type={type} caught={stat.caught} total={stat.total} />;
       })}
     </Flex>
   );
 });
 
-// Type Coverage Grid
+// Type Coverage Grid using Tags
 const TypeCoverageGrid = memo(function TypeCoverageGrid({ ownedTypes }) {
-  const { token } = theme.useToken();
-
   return (
-    <Flex wrap="wrap" gap={token.paddingXXS}>
+    <Flex wrap="wrap" gap="small">
       {ALL_TYPES.map((type) => {
         const owned = ownedTypes.has(type);
         return (
-          <Flex
+          <Tag
             key={type}
-            align="center"
-            gap={3}
-            style={{
-              padding: `${token.paddingXXS}px ${token.paddingXS}px`,
-              borderRadius: token.borderRadiusSM,
-              background: owned ? `${token.colorPrimary}15` : undefined,
-              border: `1px solid ${owned ? `${token.colorPrimary}30` : token.colorBorder}`,
-              opacity: owned ? 1 : 0.4,
+            color={owned ? TYPES[type] : 'default'}
+            variant={owned ? 'filled' : 'outlined'}
+            style={{ 
+              opacity: owned ? 1 : 0.35,
             }}
           >
-            <span style={{ fontSize: 11 }}>{getTypeIcon(type)}</span>
-            <Text style={{ fontSize: 10, textTransform: 'capitalize', color: owned ? undefined : token.colorTextQuaternary }}>
+            <span>{getTypeIcon(type)}</span>
+            <Text style={{ marginLeft: 6, textTransform: 'capitalize', color: 'inherit' }}>
               {type}
             </Text>
-            {owned && <Text style={{ fontSize: 9, color: token.colorPrimary }}>✓</Text>}
-          </Flex>
+            {owned && <Text style={{ marginLeft: 6 }}>✓</Text>}
+          </Tag>
         );
       })}
     </Flex>
@@ -130,18 +118,18 @@ const EvolutionProgress = memo(function EvolutionProgress({ caught }) {
   }, [caught]);
 
   return (
-    <Flex gap={token.paddingMD}>
-      <Flex align="center" gap={4}>
-        <Text type="secondary" style={{ fontSize: 10 }}>Base</Text>
-        <Text strong style={{ fontSize: 12 }}>{stageStats.base.caught}/{stageStats.base.total}</Text>
+    <Flex gap={token.paddingLG}>
+      <Flex align="center" gap="small">
+        <Text type="secondary">Base</Text>
+        <Text strong>{stageStats.base.caught}/{stageStats.base.total}</Text>
       </Flex>
-      <Flex align="center" gap={4}>
-        <Text type="secondary" style={{ fontSize: 10 }}>S1</Text>
-        <Text strong style={{ fontSize: 12 }}>{stageStats.stage1.caught}/{stageStats.stage1.total}</Text>
+      <Flex align="center" gap="small">
+        <Text type="secondary">Stage 1</Text>
+        <Text strong>{stageStats.stage1.caught}/{stageStats.stage1.total}</Text>
       </Flex>
-      <Flex align="center" gap={4}>
-        <Text type="secondary" style={{ fontSize: 10 }}>S2</Text>
-        <Text strong style={{ fontSize: 12 }}>{stageStats.stage2.caught}/{stageStats.stage2.total}</Text>
+      <Flex align="center" gap="small">
+        <Text type="secondary">Stage 2</Text>
+        <Text strong>{stageStats.stage2.caught}/{stageStats.stage2.total}</Text>
       </Flex>
     </Flex>
   );
@@ -161,12 +149,12 @@ const StarterProgress = memo(function StarterProgress({ caught }) {
   }, [caught]);
 
   return (
-    <Flex gap={token.paddingSM}>
+    <Flex gap={token.paddingLG}>
       {Object.entries(starterStats).map(([type, stat]) => (
-        <Flex key={type} align="center" gap={4}>
-          <span style={{ fontSize: 12 }}>{getTypeIcon(type)}</span>
-          <Text style={{ fontSize: 12 }}>{stat.caught}/{stat.total}</Text>
-          {stat.caught === stat.total && <Text style={{ color: token.colorSuccess, fontSize: 10 }}>✓</Text>}
+        <Flex key={type} align="center" gap="small">
+          <span>{getTypeIcon(type)}</span>
+          <Text>{stat.caught}/{stat.total}</Text>
+          {stat.caught === stat.total && <Text style={{ color: token.colorSuccess }}>✓</Text>}
         </Flex>
       ))}
     </Flex>
@@ -175,19 +163,17 @@ const StarterProgress = memo(function StarterProgress({ caught }) {
 
 // Special Pokemon Progress
 const SpecialProgress = memo(function SpecialProgress({ caught, title, ids }) {
-  const { token } = theme.useToken();
-
   const stats = useMemo(() => {
     return { caught: ids.filter(id => caught.has(id)).length, total: ids.length };
   }, [caught, ids]);
 
   return (
-    <Flex vertical gap={2}>
+    <Flex vertical gap="small">
       <Flex align="center" justify="space-between">
-        <Text type="secondary" style={{ fontSize: 10 }}>{title}</Text>
-        <Text style={{ fontSize: 11 }}>{stats.caught}/{stats.total}</Text>
+        <Text type="secondary">{title}</Text>
+        <Text>{stats.caught}/{stats.total}</Text>
       </Flex>
-      <Flex gap={2}>
+      <Flex gap="small">
         {ids.map((id) => {
           const isCaught = caught.has(id);
           const data = KANTO_MAP.get(id);
@@ -196,8 +182,8 @@ const SpecialProgress = memo(function SpecialProgress({ caught, title, ids }) {
               <img
                 src={`./sprites/${id}.png`}
                 alt={data ? data[1] : `#${id}`}
-                width={18}
-                height={18}
+                width={32}
+                height={32}
                 style={{
                   imageRendering: 'pixelated',
                   opacity: isCaught ? 1 : 0.25,
@@ -236,29 +222,29 @@ const JourneyStats = memo(function JourneyStats({ caught }) {
   }, [caught]);
 
   if (journeyData.firstCatch === null) {
-    return <Text type="secondary" style={{ fontSize: 11, fontStyle: 'italic' }}>Start catching!</Text>;
+    return <Text type="secondary" italic>Start catching!</Text>;
   }
 
   const firstData = KANTO_MAP.get(journeyData.firstCatch.id);
 
   return (
-    <Flex gap={token.paddingMD} wrap="wrap">
-      <Flex align="center" gap={4}>
-        <Text type="secondary" style={{ fontSize: 10 }}>First:</Text>
+    <Flex gap={token.paddingLG} wrap="wrap">
+      <Flex align="center" gap="small">
+        <Text type="secondary">First:</Text>
         {firstData && (
-          <Flex align="center" gap={2}>
-            <img src={`./sprites/${journeyData.firstCatch.id}.png`} alt={firstData[1]} width={14} height={14} style={{ imageRendering: 'pixelated' }} />
-            <Text style={{ fontSize: 10 }}>{firstData[1]}</Text>
+          <Flex align="center" gap="small">
+            <img src={`./sprites/${journeyData.firstCatch.id}.png`} alt={firstData[1]} width={24} height={24} style={{ imageRendering: 'pixelated' }} />
+            <Text>{firstData[1]}</Text>
           </Flex>
         )}
       </Flex>
-      <Flex align="center" gap={4}>
-        <Text type="secondary" style={{ fontSize: 10 }}>Days:</Text>
-        <Text style={{ fontSize: 11 }}>{journeyData.daysActive}</Text>
+      <Flex align="center" gap="small">
+        <Text type="secondary">Days:</Text>
+        <Text>{journeyData.daysActive}</Text>
       </Flex>
-      <Flex align="center" gap={4}>
-        <Text type="secondary" style={{ fontSize: 10 }}>Avg:</Text>
-        <Text style={{ fontSize: 11 }}>{journeyData.catchesPerDay}/day</Text>
+      <Flex align="center" gap="small">
+        <Text type="secondary">Avg:</Text>
+        <Text>{journeyData.catchesPerDay}/day</Text>
       </Flex>
     </Flex>
   );
@@ -288,19 +274,17 @@ const CatchTimeline = memo(function CatchTimeline({ caught }) {
   }, [caught]);
 
   if (caught.size === 0) {
-    return <Text type="secondary" style={{ fontStyle: 'italic', fontSize: 12 }}>No Pokémon caught yet!</Text>;
+    return <Text type="secondary" italic>No Pokémon caught yet!</Text>;
   }
 
   const timelineData = [
     ...timelineItems.entries.slice(0, 12).map((entry) => ({
       color: token.colorPrimary,
+      title: formatShortDate(entry.timestamp),
       content: (
-        <Flex align="center" gap={token.paddingXS}>
-          <img src={`./sprites/${entry.id}.png`} alt={entry.name} width={18} height={18} style={{ imageRendering: 'pixelated' }} />
-          <Flex>
-            <Text strong style={{ fontSize: 11 }}>{entry.name}</Text>
-            <Text type="secondary" style={{ fontSize: 9, marginLeft: 4 }}>{formatShortDate(entry.timestamp)}</Text>
-          </Flex>
+        <Flex align="center" gap="small">
+          <img src={`./sprites/${entry.id}.png`} alt={entry.name} width={24} height={24} style={{ imageRendering: 'pixelated' }} />
+          <Text strong>{entry.name}</Text>
         </Flex>
       ),
     })),
@@ -310,16 +294,16 @@ const CatchTimeline = memo(function CatchTimeline({ caught }) {
     timelineData.push({
       color: token.colorTextQuaternary,
       content: (
-        <Flex vertical gap={2}>
-          <Text type="secondary" style={{ fontSize: 10 }}>Previous ({timelineItems.migratedEntries.length})</Text>
-          <Flex wrap="wrap" gap={2}>
+        <Flex vertical gap="small">
+          <Text type="secondary">Previous ({timelineItems.migratedEntries.length})</Text>
+          <Flex wrap="wrap" gap="small">
             {timelineItems.migratedEntries.slice(0, 10).map((entry) => (
               <Tooltip key={entry.id} title={entry.name}>
-                <img src={`./sprites/${entry.id}.png`} alt={entry.name} width={16} height={16} style={{ imageRendering: 'pixelated' }} />
+                <img src={`./sprites/${entry.id}.png`} alt={entry.name} width={24} height={24} style={{ imageRendering: 'pixelated' }} />
               </Tooltip>
             ))}
             {timelineItems.migratedEntries.length > 10 && (
-              <Text type="secondary" style={{ fontSize: 9 }}>+{timelineItems.migratedEntries.length - 10}</Text>
+              <Text type="secondary">+{timelineItems.migratedEntries.length - 10}</Text>
             )}
           </Flex>
         </Flex>
@@ -330,19 +314,24 @@ const CatchTimeline = memo(function CatchTimeline({ caught }) {
   return <Timeline items={timelineData} />;
 });
 
-// Mini Stat Card
-const MiniStatCard = memo(function MiniStatCard({ title, value, suffix, icon, color }) {
+// Stat Card using Ant Design Statistic
+const StatCard = memo(function StatCard({ title, value, suffix, prefix, valueStyle }) {
   const { token } = theme.useToken();
 
   return (
-    <Card size="small" styles={{ body: { padding: `${token.paddingXXS}px ${token.paddingSM}px` } }}>
-      <Flex align="center" gap={token.paddingXS}>
-        {icon && <span style={{ fontSize: 14 }}>{icon}</span>}
-        <Flex vertical>
-          <Text type="secondary" style={{ fontSize: 9, lineHeight: 1 }}>{title}</Text>
-          <Text strong style={{ fontSize: 14, color }}>{value}{suffix}</Text>
-        </Flex>
-      </Flex>
+    <Card 
+      variant="borderless"
+      styles={{ 
+        body: { padding: token.paddingSM },
+      }}
+    >
+      <Statistic
+        title={title}
+        value={value}
+        suffix={suffix}
+        prefix={prefix}
+        valueStyle={valueStyle}
+      />
     </Card>
   );
 });
@@ -383,77 +372,123 @@ export default function StatsView() {
     return { caughtCount, missingCount, shinyCount, badgeCount, pct, typeStats, ownedTypes };
   }, [caught, shiny, badges]);
 
+  // Gradient colors for progress
+  const progressGradient = {
+    '0%': token.colorPrimary,
+    '100%': token.colorSuccess,
+  };
+
   return (
-    <Flex vertical gap={token.paddingMD} style={{ padding: token.paddingMD, overflowY: 'auto' }}>
+    <Flex vertical gap={token.paddingLG} style={{ padding: token.paddingLG, overflowY: 'auto' }}>
       {/* Top Row: Quick Stats + Progress */}
-      <Flex gap={token.paddingMD} wrap="wrap" align="center" justify="space-between">
-        <Flex gap={token.paddingXS} wrap="wrap">
-          <MiniStatCard title="Caught" value={stats.caughtCount} suffix={`/${KANTO_TOTAL}`} color={token.colorPrimary} />
-          <MiniStatCard title="Missing" value={stats.missingCount} color={token.colorTextSecondary} />
-          <MiniStatCard title="Shiny" value={stats.shinyCount} icon="🌟" color={token.colorShiny} />
-          <MiniStatCard title="Badges" value={stats.badgeCount} suffix="/8" color={token.colorPrimary} />
-        </Flex>
-        <Flex align="center" gap={token.paddingSM}>
-          <Progress type="circle" percent={stats.pct} size={60} format={(p) => <Text strong style={{ fontSize: 14 }}>{p}%</Text>} />
-        </Flex>
-      </Flex>
+      <Row gutter={[token.paddingLG, token.paddingLG]} align="middle">
+        <Col xs={24} sm={16} md={18}>
+          <Flex gap="small" wrap="wrap">
+            <StatCard 
+              title="Caught" 
+              value={stats.caughtCount} 
+              suffix={`/ ${KANTO_TOTAL}`}
+              valueStyle={{ color: token.colorPrimary }}
+            />
+            <StatCard 
+              title="Missing" 
+              value={stats.missingCount}
+              valueStyle={{ color: token.colorTextSecondary }}
+            />
+            <StatCard 
+              title="Shiny" 
+              value={stats.shinyCount}
+              prefix={<span>🌟</span>}
+              valueStyle={{ color: token.colorShiny }}
+            />
+            <StatCard 
+              title="Badges" 
+              value={stats.badgeCount}
+              suffix="/ 8"
+              valueStyle={{ color: token.colorPrimary }}
+            />
+          </Flex>
+        </Col>
+        <Col xs={24} sm={8} md={6} style={{ textAlign: 'center' }}>
+          <Progress 
+            type="dashboard" 
+            percent={stats.pct} 
+            size={120}
+            strokeColor={progressGradient}
+            format={(p) => (
+              <Flex vertical align="center">
+                <Text strong style={{ fontSize: token.fontSizeLG }}>{p}%</Text>
+                <Text type="secondary">Complete</Text>
+              </Flex>
+            )}
+          />
+        </Col>
+      </Row>
 
-      {/* Recent Catches + Stats Row - 50/50 split */}
-      <Flex gap={token.paddingMD} wrap>
-        {/* Recent Catches - Max 50% width */}
-        <Card 
-          size="small" 
-          title={<Text strong style={{ fontSize: 13 }}>Recent Catches</Text>} 
-          styles={{ body: { padding: token.paddingSM, maxHeight: 200, overflowY: 'auto' } }}
-          style={{ flex: '1 1 280px', maxWidth: '50%' }}
-        >
-          <CatchTimeline caught={caught} />
-        </Card>
-
-        {/* Stats Column - fills remaining space */}
-        <Flex vertical gap={token.paddingSM} style={{ flex: '1 1 280px', minWidth: 280 }}>
-          {/* Evolution Progress */}
-          <Card size="small" title={<Text type="secondary" style={{ fontSize: 11 }}>Evolution Stages</Text>} styles={{ body: { padding: token.paddingXS } }}>
-            <EvolutionProgress caught={caught} />
+      {/* Recent Catches + Stats Row */}
+      <Row gutter={[token.paddingLG, token.paddingLG]}>
+        {/* Recent Catches */}
+        <Col xs={24} md={12}>
+          <Card 
+            title={<Title level={5} style={{ margin: 0 }}>Recent Catches</Title>}
+            styles={{ body: { padding: token.padding, maxHeight: 280, overflowY: 'auto' } }}
+          >
+            <CatchTimeline caught={caught} />
           </Card>
+        </Col>
 
-          {/* Starter Progress */}
-          <Card size="small" title={<Text type="secondary" style={{ fontSize: 11 }}>Starter Lines</Text>} styles={{ body: { padding: token.paddingXS } }}>
-            <StarterProgress caught={caught} />
-          </Card>
+        {/* Stats Column */}
+        <Col xs={24} md={12}>
+          <Flex vertical gap={token.padding}>
+            {/* Evolution Progress */}
+            <Card title={<Text type="secondary">Evolution Stages</Text>} styles={{ body: { padding: token.paddingSM } }}>
+              <EvolutionProgress caught={caught} />
+            </Card>
 
-          {/* Journey Stats */}
-          <Card size="small" title={<Text type="secondary" style={{ fontSize: 11 }}>Journey</Text>} styles={{ body: { padding: token.paddingXS } }}>
-            <JourneyStats caught={caught} />
-          </Card>
-        </Flex>
-      </Flex>
+            {/* Starter Progress */}
+            <Card title={<Text type="secondary">Starter Lines</Text>} styles={{ body: { padding: token.paddingSM } }}>
+              <StarterProgress caught={caught} />
+            </Card>
+
+            {/* Journey Stats */}
+            <Card title={<Text type="secondary">Journey</Text>} styles={{ body: { padding: token.paddingSM } }}>
+              <JourneyStats caught={caught} />
+            </Card>
+          </Flex>
+        </Col>
+      </Row>
 
       {/* Special Pokemon Row */}
-      <Flex gap={token.paddingMD} wrap>
-        <Card size="small" title={<Text type="secondary" style={{ fontSize: 11 }}>Legendaries</Text>} styles={{ body: { padding: token.paddingXS } }} style={{ flex: '1 1 150px' }}>
-          <SpecialProgress caught={caught} title="Birds" ids={LEGENDARIES} />
-        </Card>
+      <Row gutter={[token.paddingLG, token.paddingLG]}>
+        <Col xs={24} sm={8}>
+          <Card title={<Text type="secondary">Legendaries</Text>} styles={{ body: { padding: token.paddingSM } }}>
+            <SpecialProgress caught={caught} title="Birds" ids={LEGENDARIES} />
+          </Card>
+        </Col>
 
-        <Card size="small" title={<Text type="secondary" style={{ fontSize: 11 }}>Mythical</Text>} styles={{ body: { padding: token.paddingXS } }} style={{ flex: '1 1 150px' }}>
-          <SpecialProgress caught={caught} title="Mewtwo & Mew" ids={MYTHICAL} />
-        </Card>
+        <Col xs={24} sm={8}>
+          <Card title={<Text type="secondary">Mythical</Text>} styles={{ body: { padding: token.paddingSM } }}>
+            <SpecialProgress caught={caught} title="Mewtwo & Mew" ids={MYTHICAL} />
+          </Card>
+        </Col>
 
-        <Card size="small" title={<Text type="secondary" style={{ fontSize: 11 }}>Fossils</Text>} styles={{ body: { padding: token.paddingXS } }} style={{ flex: '1 1 150px' }}>
-          <SpecialProgress caught={caught} title="Ancient" ids={FOSSILS} />
-        </Card>
-      </Flex>
+        <Col xs={24} sm={8}>
+          <Card title={<Text type="secondary">Fossils</Text>} styles={{ body: { padding: token.paddingSM } }}>
+            <SpecialProgress caught={caught} title="Ancient" ids={FOSSILS} />
+          </Card>
+        </Col>
+      </Row>
 
       {/* Type Coverage */}
-      <Card size="small" title={<Text strong style={{ fontSize: 13 }}>Type Coverage</Text>} styles={{ body: { padding: token.paddingXS } }}>
-        <Text type="secondary" style={{ fontSize: 10 }}>{stats.ownedTypes.size} of {ALL_TYPES.length} types owned</Text>
-        <div style={{ marginTop: token.paddingXXS }}>
+      <Card title={<Title level={5} style={{ margin: 0 }}>Type Coverage</Title>} styles={{ body: { padding: token.paddingSM } }}>
+        <Text type="secondary">{stats.ownedTypes.size} of {ALL_TYPES.length} types owned</Text>
+        <div style={{ marginTop: token.paddingXS }}>
           <TypeCoverageGrid ownedTypes={stats.ownedTypes} />
         </div>
       </Card>
 
-      {/* Type Breakdown - Compact Grid */}
-      <Card size="small" title={<Text strong style={{ fontSize: 13 }}>Type Breakdown</Text>} styles={{ body: { padding: token.paddingXS } }}>
+      {/* Type Breakdown */}
+      <Card title={<Title level={5} style={{ margin: 0 }}>Type Breakdown</Title>} styles={{ body: { padding: token.paddingSM } }}>
         <TypeBreakdownGrid typeStats={stats.typeStats} />
       </Card>
     </Flex>

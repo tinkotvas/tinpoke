@@ -117,6 +117,7 @@ export const fireRedTheme = {
     Timeline: {
       dotBg: '#FF6B4A',
       tailColor: '#3A2A25',
+      dotSize: 10,
     },
     Divider: {
       colorSplit: '#3A2A25',
@@ -192,6 +193,7 @@ export const leafGreenTheme = {
     Timeline: {
       dotBg: '#4CAF50',
       tailColor: '#E8F0E8',
+      dotSize: 10,
     },
     Divider: {
       colorSplit: '#C8E6C9',
