@@ -1,29 +1,34 @@
 # tinpoke
 
-A browser-based Pokedex tracker for Pokemon FireRed / LeafGreen. Point your Switch capture at the screen and track catches as you play.
+> A browser-based Pokédex tracker for Pokémon FireRed / LeafGreen. Track your catches in real-time while playing.
 
-Built as a single-file app — runs entirely in the browser with no backend. All progress is saved to localStorage.
+![FireRed](https://img.shields.io/badge/FireRed-E3350D?logo=pokemon&logoColor=white)
+![LeafGreen](https://img.shields.io/badge/LeafGreen-4CAF50?logo=pokemon&logoColor=white)
+![Kanto](https://img.shields.io/badge/Kanto-151-blue)
+![Offline](https://img.shields.io/badge/works-offline-orange)
 
-![FireRed](https://img.shields.io/badge/FireRed-Pokemon-E3350D?logo=pokemon&logoColor=white)
-![LeafGreen](https://img.shields.io/badge/LeafGreen-Pokemon-4CAF50?logo=pokemon&logoColor=white)
-![Pokemon](https://img.shields.io/badge/pokemon-151-blue)
-![Gen III](https://img.shields.io/badge/generation-III-orange)
+Point your Switch capture card at the browser, mark Pokemon as caught, and track your progress — all in one screen.
 
+---
 
-## What it does
+## ✨ Features
 
-- **Switch feed** — Capture your Switch screen via USB capture card or camera. The app displays the video feed so you can play and track side by side.
-- **Quick Catch** — A floating button overlay that lets you mark Pokemon as caught without leaving the video feed. Sorts uncaught Pokemon first, prioritizes the route you're on.
-- **Route checklist** — Every FRLG area from Pallet Town to Cerulean Cave, including Sevii Islands. Shows which Pokemon are available and which you still need.
-- **Route overlay** — A draggable, resizable overlay showing the Pokemon available on your current route(s), right on top of the video feed.
-- **Badges** — Track your 8 Kanto gym badges.
-- **Stats** — Type coverage grid, catch timeline, and milestone progress.
-- **Shiny tracking** — Shift+click a caught Pokemon to mark it as shiny (holographic card effect).
-- **Confetti** — Celebrations at 25%, 50%, 75%, and 100% completion.
-- **Themes** — Fire Red (dark) and Leaf Green (light).
-- **Offline** — Builds to a single HTML file. No internet required after build.
+| 🎮 Switch Feed | Live video from USB capture card or camera |
+|---|---|
+| ⚡ Quick Catch | Floating overlay to mark catches without leaving gameplay |
+| 🗺️ Routes | Every FRLG area from Pallet Town to Cerulean Cave + Sevii Islands |
+| 📋 Route Overlay | Draggable, resizable panel showing Pokemon on your current route |
+| 🏅 Badges | Track all 8 Kanto gym badges |
+| 📊 Stats | Type coverage grid, catch timeline, milestone progress |
+| ✨ Shiny Tracking | Shift+click a caught Pokemon to mark it shiny |
+| 🎉 Celebrations | Confetti at 25%, 50%, 75%, and 100% completion |
+| 🎨 Themes | Fire Red (dark) and Leaf Green (light) color schemes |
+| 🔊 Sound | Catch, release, shiny, and victory sound effects |
+| 💾 Offline | Builds to a single HTML file — no server needed |
 
-## Getting started
+---
+
+## 🚀 Quick Start
 
 ```bash
 npm install
@@ -32,26 +37,31 @@ npm run dev
 
 Opens at `http://localhost:5173`.
 
-## Build
+## 📦 Build
 
 ```bash
 npm run build
 ```
 
-Produces a single self-contained HTML file in `dist/` via `vite-plugin-singlefile`. Drop it anywhere and open it — no server needed.
+Produces a single self-contained HTML file in `dist/` via `vite-plugin-singlefile`. Drop it anywhere and open it.
 
-## Controls
+---
+
+## 🎮 Controls
 
 | Action | Input |
 |---|---|
-| Catch / Release | `Shift + Click` on a Pokemon |
-| Toggle shiny | `Shift + Click` on a caught Pokemon |
-| Open details | `Enter` or click on a Pokemon card |
-| Quick Catch search | Type in the Quick Catch overlay, `Enter` to catch first match |
-| Theater mode | Toggle from the header — hides UI, mouse to top to exit |
+| Catch / Release | `Shift + Click` |
+| Toggle Shiny | `Shift + Click` on a caught Pokemon |
+| Open Details | `Enter` or click |
+| Quick Catch Search | Type in overlay, `Enter` catches first match |
+| Theater Mode | Toggle from header — mouse to top edge to exit |
 | Help | `?` |
 
-## Data
+---
+
+<details>
+<summary><strong>📍 Data Coverage</strong></summary>
 
 All 151 Kanto Pokemon with:
 
@@ -62,15 +72,42 @@ All 151 Kanto Pokemon with:
 
 Special categories: legendaries, starter gifts, in-game trades, Game Corner purchases, and Mew.
 
-## Tech
+</details>
+
+<details>
+<summary><strong>🛠️ Tech Stack</strong></summary>
 
 - React 18 + Vite 5
-- Zustand for state
+- Zustand for state management
 - Ant Design for UI components
 - react-virtuoso for virtualized grids
 - react-rnd for draggable/resizable overlays
 - Web Audio API for sound effects
+- vite-plugin-singlefile for standalone HTML builds
 
-## Storage
+</details>
 
-Everything lives in `localStorage` — caught Pokemon, badges, settings, filters, milestones. Use the settings modal to export/import your save data.
+<details>
+<summary><strong>💾 Storage</strong></summary>
+
+Everything lives in `localStorage`:
+
+- Caught Pokemon
+- Shiny markers
+- Badge progress
+- Settings and filters
+- Milestone tracking
+
+Use the settings modal to export/import your save data.
+
+</details>
+
+---
+
+## Screenshot
+
+> Add a screenshot or GIF demo here
+
+---
+
+Made by and for Pokemon fans.
