@@ -22,24 +22,12 @@ const TypeFilter = memo(function TypeFilter({ selectedTypes, onTypesChange }) {
   const hasSelection = selectedTypes.size > 0;
 
   return (
-    <Flex
-      vertical
-      gap={token.paddingXS}
-      style={{
-        padding: `${token.paddingXS}px ${token.paddingLG}px`,
-        borderBottom: `1px solid ${token.colorBorder}`,
-      }}
-    >
-      <Flex align="center" justify="space-between">
-        {hasSelection && (
-          <Tag
-            style={{ cursor: 'pointer', margin: 0 }}
-            onClick={handleClearAll}
-          >
-            Clear all
-          </Tag>
-        )}
-      </Flex>
+    <Flex vertical gap={token.paddingXS} style={{ padding: `${token.paddingXS}px ${token.paddingLG}px` }}>
+      {hasSelection && (
+        <Tag style={{ cursor: 'pointer', margin: 0 }} onClick={handleClearAll}>
+          Clear all
+        </Tag>
+      )}
       <Flex wrap="wrap" gap={token.paddingXXS}>
         {Object.keys(TYPES).map((type) => {
           const isSelected = selectedTypes.has(type);
@@ -53,23 +41,10 @@ const TypeFilter = memo(function TypeFilter({ selectedTypes, onTypesChange }) {
                 cursor: 'pointer',
                 margin: 0,
                 padding: `${token.paddingXXS}px ${token.paddingXS}px`,
-                borderRadius: token.borderRadiusSM,
-                fontSize: token.fontSizeSM,
                 whiteSpace: 'nowrap',
-                transition: `all ${token.motionDurationFast}`,
-                border: isSelected
-                  ? `1px solid ${token.colorPrimary}`
-                  : `1px solid ${token.colorBorder}`,
-                background: isSelected
-                  ? `${token.colorPrimary}15`
-                  : 'transparent',
-                color: isSelected
-                  ? token.colorPrimary
-                  : token.colorTextSecondary,
               }}
             >
-              <span style={{ marginRight: token.paddingXXS }}>{getTypeIcon(type)}</span>
-              <span style={{ textTransform: 'capitalize' }}>{type}</span>
+              {getTypeIcon(type)} <span style={{ textTransform: 'capitalize' }}>{type}</span>
             </Tag>
           );
         })}

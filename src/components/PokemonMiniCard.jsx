@@ -23,6 +23,7 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
   const isMini = size === 'mini';
   const spriteSize = isMini ? 44 : 80;
 
+  // Type accent color is custom per Pokemon type - not from theme
   const typeAccentColor = useMemo(() => {
     const primaryType = types[0];
     return TYPE_HEX_COLORS[primaryType] || '#888888';
@@ -73,11 +74,13 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
 
   const formattedNumber = String(id).padStart(3, '0');
 
+  // Dynamic border color based on caught state
   const caughtBorderColor = isCaught
     ? `${token.colorPrimary}50`
     : token.colorBorder;
   
-  const cardStyle = {
+  // Memoize card style to avoid recreation on every render
+  const cardStyle = useMemo(() => ({
     flex: isMini ? '1 1 80px' : undefined,
     maxWidth: isMini ? 120 : undefined,
     background: isCaught
@@ -92,14 +95,23 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
       ? `${token.paddingSM}px ${token.paddingXS}px`
       : `${token.paddingMD}px ${token.paddingSM}px ${token.paddingSM + 2}px`,
     cursor: 'pointer',
-    transition: `transform ${token.motionDurationFast}, box-shadow ${token.motionDurationFast}`,
     position: 'relative',
     overflow: 'hidden',
     textAlign: 'center',
-  };
+  }), [isMini, isCaught, token, caughtBorderColor, typeAccentColor]);
 
-  const cardContent = (
-    <>
+  return (
+    <Flex
+      vertical
+      align="center"
+      role="button"
+      tabIndex={0}
+      aria-label={`${name}, #${formattedNumber}. ${isCaught ? 'Caught' : 'Not caught'}. ${isShiny ? 'Shiny.' : ''} Click to open details. Shift+click to toggle caught/shiny.`}
+      className={`pokemon-card ${isShiny ? 'shiny-pokemon' : ''}`}
+      onClick={handleCardClick}
+      onKeyDown={handleKeyDown}
+      style={cardStyle}
+    >
       {isShiny && (
         <span className="shiny-indicator">🌟</span>
       )}
@@ -143,8 +155,7 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
               border: `1px solid ${isShiny ? '#FFD700' : token.colorBorder}`,
               cursor: 'pointer',
               fontSize: isMini ? 11 : 14,
-              boxShadow: `0 2px 4px rgba(0,0,0,0.1)`,
-              transition: `transform ${token.motionDurationFast}`,
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               zIndex: 3,
             }}
           >
@@ -156,11 +167,10 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
       <Text
         type="secondary"
         style={{
-          fontSize: token.fontSizeXS,
           letterSpacing: 1,
           display: 'block',
           marginBottom: isMini ? 0 : token.paddingXS,
-          color: isCaught ? token.colorPrimaryActive : token.colorTextQuaternary,
+          color: isCaught ? token.colorPrimaryActive : undefined,
         }}
       >
         #{formattedNumber}
@@ -171,13 +181,11 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
         size={spriteSize}
         isCaught={isCaught}
         mode={mode}
-        style={{ margin: isMini ? '0 auto' : '0 auto' }}
       />
 
       <Text
         strong
         style={{
-          fontSize: isMini ? token.fontSize : token.fontSizeSM,
           display: 'block',
           marginTop: isMini ? token.paddingXXS : token.paddingXS,
           whiteSpace: 'nowrap',
@@ -201,29 +209,12 @@ const PokemonMiniCard = memo(function PokemonMiniCard({
         <Text
           style={{
             marginTop: token.paddingXXS,
-            fontSize: token.fontSizeXS,
             color: isShiny ? '#FFD700' : token.colorTextTertiary,
           }}
         >
           {isShiny ? '🌟' : 'shift+🌟'}
         </Text>
       )}
-    </>
-  );
-
-  return (
-    <Flex
-      vertical
-      align="center"
-      role="button"
-      tabIndex={0}
-      aria-label={`${name}, #${formattedNumber}. ${isCaught ? 'Caught' : 'Not caught'}. ${isShiny ? 'Shiny.' : ''} Click to open details. Shift+click to toggle caught/shiny.`}
-      className={`pokemon-card ${isShiny ? 'shiny-pokemon' : ''}`}
-      onClick={handleCardClick}
-      onKeyDown={handleKeyDown}
-      style={cardStyle}
-    >
-      {cardContent}
     </Flex>
   );
 });

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Tag, theme, Tooltip } from 'antd';
+import { Tag, Tooltip } from 'antd';
 import { getTypeColor, getTypeIcon } from '../data/pokemon.js';
 
 /**
@@ -12,23 +12,16 @@ const TypeTag = memo(function TypeTag({
   tooltip = true,
   style,
 }) {
-  const { token } = theme.useToken();
-
   const sizeStyles = {
     default: {
-      fontSize: token.fontSizeSM,
-      padding: token.paddingXXS,
       width: 24,
       height: 24,
     },
     small: {
-      fontSize: token.fontSizeXS,
       padding: '0 4px',
       lineHeight: '16px',
     },
     mini: {
-      fontSize: token.fontSizeSM,
-      padding: 1,
       width: 20,
       height: 20,
     },
@@ -40,7 +33,6 @@ const TypeTag = memo(function TypeTag({
       variant="filled"
       style={{
         ...sizeStyles[size],
-        borderRadius: token.borderRadiusSM,
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',

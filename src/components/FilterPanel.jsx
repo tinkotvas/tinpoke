@@ -1,6 +1,8 @@
 import { memo } from 'react';
-import { Select, Flex, theme } from 'antd';
+import { Select, Flex, Typography, theme } from 'antd';
 import TypeFilter from './TypeFilter.jsx';
+
+const { Text } = Typography;
 
 const sortOptions = [
   { value: 'dex', label: 'Dex #' },
@@ -26,24 +28,15 @@ const FilterPanel = memo(function FilterPanel({
   const { token } = theme.useToken();
 
   return (
-    <Flex
-      vertical
-      style={{
-        background: token.colorBgElevated,
-        borderBottom: `1px solid ${token.colorBorder}`,
-      }}
-    >
+    <Flex vertical>
       <Flex
         align="center"
         gap={token.paddingSM}
         style={{
           padding: `${token.paddingXS}px ${token.paddingLG}px`,
-          borderBottom: `1px solid ${token.colorBorder}`,
         }}
       >
-        <span style={{ fontSize: token.fontSizeSM, color: token.colorTextSecondary }}>
-          Show:
-        </span>
+        <Text type="secondary">Show:</Text>
         <Select
           value={statusFilter}
           onChange={onStatusChange}
@@ -51,9 +44,7 @@ const FilterPanel = memo(function FilterPanel({
           style={{ minWidth: 100 }}
           popupMatchSelectWidth
         />
-        <span style={{ fontSize: token.fontSizeSM, color: token.colorTextSecondary, marginLeft: token.paddingSM }}>
-          Sort:
-        </span>
+        <Text type="secondary" style={{ marginLeft: token.paddingSM }}>Sort:</Text>
         <Select
           value={sortBy}
           onChange={onSortChange}

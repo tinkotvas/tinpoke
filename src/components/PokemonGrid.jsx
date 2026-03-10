@@ -57,8 +57,6 @@ const GridItem = memo(function GridItem({ children, ...props }) {
 });
 
 export default function PokemonGrid({ pokemon, onToggle, onToggleShiny, onSelect }) {
-  const { token } = theme.useToken();
-  
   // Read from store directly
   const caught = useCaughtStore((s) => s.caught);
   const shiny = useCaughtStore((s) => s.shiny);

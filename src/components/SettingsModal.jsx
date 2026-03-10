@@ -28,7 +28,6 @@ export default function SettingsModal({ onImport }) {
   const exportData = useMemo(() => {
     const now = new Date();
     const exportDate = now.toISOString();
-    const filename = `pokedex-backup-${now.toISOString().split('T')[0]}.json`;
 
     return {
       version: EXPORT_VERSION,
@@ -142,9 +141,6 @@ export default function SettingsModal({ onImport }) {
         type="text"
         icon={<SettingOutlined />}
         onClick={() => setOpen(true)}
-        style={{
-          color: token.colorTextSecondary,
-        }}
         title="Settings"
       />
 
@@ -168,12 +164,12 @@ export default function SettingsModal({ onImport }) {
           <Flex vertical gap={token.paddingMD}>
             <Flex vertical gap={token.paddingXS}>
               <Text>Import will add:</Text>
-              <Flex vertical style={{ padding: token.paddingSM, background: token.colorBgTextHover, borderRadius: token.borderRadius }}>
+              <Flex vertical style={{ padding: token.paddingSM }}>
                 <Text>• <strong>{importPreview.newCaught}</strong> new caught Pokemon</Text>
                 <Text>• <strong>{importPreview.newShiny}</strong> new shiny marks</Text>
                 <Text>• <strong>{importPreview.newBadges}</strong> new badges</Text>
               </Flex>
-              <Text type="secondary" style={{ fontSize: token.fontSizeSM }}>
+              <Text type="secondary">
                 This will merge with your current progress and overwrite existing entries.
               </Text>
             </Flex>
@@ -190,12 +186,12 @@ export default function SettingsModal({ onImport }) {
               <Flex vertical gap={token.paddingMD} style={{ flex: 1 }}>
                 <Flex vertical gap={token.paddingXS}>
                   <Title level={5} style={{ margin: 0 }}>Theme</Title>
-                  <Text type="secondary" style={{ fontSize: token.fontSizeSM }}>
+                  <Text type="secondary">
                     Switch between light and dark mode.
                   </Text>
                 </Flex>
                 <Flex align="center" gap={token.paddingSM}>
-                  {theme_mode === 'dark' ? <SunOutlined style={{ color: token.colorTextSecondary }} /> : <MoonOutlined style={{ color: token.colorTextSecondary }} />}
+                  {theme_mode === 'dark' ? <SunOutlined /> : <MoonOutlined />}
                   <Switch 
                     checked={theme_mode === 'dark'} 
                     onChange={toggleTheme}
@@ -208,12 +204,12 @@ export default function SettingsModal({ onImport }) {
               <Flex vertical gap={token.paddingMD} style={{ flex: 1 }}>
                 <Flex vertical gap={token.paddingXS}>
                   <Title level={5} style={{ margin: 0 }}>Sound Effects</Title>
-                  <Text type="secondary" style={{ fontSize: token.fontSizeSM }}>
+                  <Text type="secondary">
                     Enable sound effects when catching Pokemon.
                   </Text>
                 </Flex>
                 <Flex align="center" gap={token.paddingSM}>
-                  <SoundOutlined style={{ color: token.colorTextSecondary }} />
+                  <SoundOutlined />
                   <Switch 
                     checked={soundEnabled} 
                     onChange={setSoundEnabled}
@@ -230,7 +226,7 @@ export default function SettingsModal({ onImport }) {
               <Flex vertical gap={token.paddingMD} style={{ flex: 1 }}>
                 <Flex vertical gap={token.paddingXS}>
                   <Title level={5} style={{ margin: 0 }}>Export Progress</Title>
-                  <Text type="secondary" style={{ fontSize: token.fontSizeSM }}>
+                  <Text type="secondary">
                     Download a backup of your caught Pokemon, shiny marks, and badges.
                   </Text>
                 </Flex>
@@ -247,7 +243,7 @@ export default function SettingsModal({ onImport }) {
               <Flex vertical gap={token.paddingMD} style={{ flex: 1 }}>
                 <Flex vertical gap={token.paddingXS}>
                   <Title level={5} style={{ margin: 0 }}>Import Progress</Title>
-                  <Text type="secondary" style={{ fontSize: token.fontSizeSM }}>
+                  <Text type="secondary">
                     Restore a previous backup. This will merge with your current progress.
                   </Text>
                 </Flex>

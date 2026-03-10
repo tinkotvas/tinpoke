@@ -72,16 +72,10 @@ function TheaterModeExit({ onExit }) {
           width: 40,
           height: 40,
           borderRadius: '50%',
-          background: token.colorBgElevated,
-          border: `1px solid ${token.colorBorder}`,
           cursor: 'pointer',
-          boxShadow: token.boxShadow,
-          fontSize: 20,
-          lineHeight: 1,
-          display: 'flex',
         }}
       >
-        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</span>
+        ✕
       </Flex>
     </div>
   );
@@ -310,7 +304,7 @@ function AppContent() {
           )}
 
           {filter === 'pokedex' && (
-            <Flex vertical style={{ height: '100%' }}>
+            <Flex vertical style={{ height: 'calc(100% - 20px)' }}>
               <SearchBar 
                 value={search} 
                 onChange={setSearch} 

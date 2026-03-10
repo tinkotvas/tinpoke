@@ -5,7 +5,7 @@ import {
   FilterOutlined,
   UnorderedListOutlined,
   DragOutlined,
-  EnvironmentOutlined,
+  NodeIndexOutlined,
 } from '@ant-design/icons';
 import { Rnd } from 'react-rnd';
 import { useShallow } from 'zustand/react/shallow';
@@ -221,7 +221,7 @@ const RouteOverlay = memo(function RouteOverlay({ onSelectPokemon }) {
             <Button
               type="text"
               size="small"
-              icon={<EnvironmentOutlined />}
+              icon={<NodeIndexOutlined />}
               onClick={() => setFilter('routes')}
               style={{ fontSize: 10, padding: 0, minWidth: 20, height: 20 }}
             />

@@ -1,6 +1,6 @@
 import { useMemo, useCallback, memo } from 'react';
-import { Collapse, Flex, Typography, Tag, theme, Tooltip, Checkbox } from 'antd';
-import { KANTO, KANTO_MAP } from '../data/pokemon.js';
+import { Collapse, Flex, Typography, Tag, theme, Checkbox } from 'antd';
+import { KANTO_MAP } from '../data/pokemon.js';
 import { ROUTES, SPECIAL } from '../data/routes.js';
 import { useCaughtStore } from '../stores/caughtStore.js';
 import { useSettingsStore } from '../stores/settingsStore.js';
@@ -9,6 +9,12 @@ import { useRouteOverlayStore } from '../stores/routeOverlayStore.js';
 import Sprite from './Sprite.jsx';
 
 const { Text, Title } = Typography;
+
+// Version colors are game-specific - not from theme
+const VERSION_COLORS = {
+  firered: '#FF4444',
+  leafgreen: '#2E8B3A',
+};
 
 const PokemonChip = memo(function PokemonChip({ id, name, types, isCaught, isShiny, onClick }) {
   const { token } = theme.useToken();
@@ -27,17 +33,15 @@ const PokemonChip = memo(function PokemonChip({ id, name, types, isCaught, isShi
         cursor: 'pointer',
         padding: token.paddingXS,
         borderRadius: token.borderRadiusSM,
-        transition: `all ${token.motionDurationFast}`,
         background: isCaught ? `${token.colorPrimary}08` : 'transparent',
       }}
     >
       <Sprite id={id} size={32} isCaught={isCaught} mode={mode} style={{ position: 'relative' }} />
       {isShiny && (
-        <span style={{ position: 'absolute', top: -2, right: -2, fontSize: 10 }}>🌟</span>
+        <span style={{ position: 'absolute', top: -2, right: -2 }}>🌟</span>
       )}
       <Text
         style={{
-          fontSize: 10,
           maxWidth: 60,
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -64,16 +68,8 @@ const RoutePanel = memo(function RoutePanel({ route, onSelectPokemon }) {
     }).filter(Boolean);
   }, [route.pokemon]);
 
-  const caughtCount = useMemo(() => {
-    return pokemonData.filter((p) => caught.has(p.id)).length;
-  }, [pokemonData, caught]);
-
   if (pokemonData.length === 0) {
-    return (
-      <Text type="secondary" style={{ fontStyle: 'italic', padding: token.paddingSM }}>
-        No wild Pokémon in this area
-      </Text>
-    );
+    return <Text type="secondary" style={{ fontStyle: 'italic', padding: token.paddingSM }}>No wild Pokémon in this area</Text>;
   }
 
   return (
@@ -117,7 +113,7 @@ const SpecialPokemonCard = memo(function SpecialPokemonCard({ id, location, hint
     <Flex
       vertical
       style={{
-        background: isCaught ? `${token.colorPrimary}08` : token.colorBgContainer,
+        background: isCaught ? `${token.colorPrimary}08` : undefined,
         border: `1px solid ${isCaught ? `${token.colorPrimary}40` : token.colorBorder}`,
         borderRadius: token.borderRadius,
         padding: token.paddingSM,
@@ -126,54 +122,25 @@ const SpecialPokemonCard = memo(function SpecialPokemonCard({ id, location, hint
       }}
     >
       <Flex align="center" gap={token.paddingSM}>
-        <Flex
-          justify="center"
-          align="center"
-          onClick={handleClick}
-          style={{ cursor: 'pointer', position: 'relative' }}
-        >
+        <Flex justify="center" align="center" onClick={handleClick} style={{ cursor: 'pointer', position: 'relative' }}>
           <Sprite id={id} size={40} isCaught={isCaught} mode={mode} />
-          {isShiny && (
-            <span style={{ position: 'absolute', top: -4, right: -4, fontSize: 12 }}>🌟</span>
-          )}
+          {isShiny && <span style={{ position: 'absolute', top: -4, right: -4 }}>🌟</span>}
         </Flex>
         <Flex vertical>
           <Flex align="center" gap={token.paddingXXS}>
-            <Text strong style={{ color: isCaught ? token.colorText : token.colorTextQuaternary }}>
-              {pokemonData.name}
-            </Text>
-            {isCaught && (
-              <Text style={{ color: token.colorPrimary, fontSize: token.fontSizeSM }}>✓</Text>
-            )}
+            <Text strong style={{ color: isCaught ? undefined : token.colorTextQuaternary }}>{pokemonData.name}</Text>
+            {isCaught && <Text style={{ color: token.colorPrimary }}>✓</Text>}
           </Flex>
           {version !== undefined && (
-            <Text
-              style={{
-                fontSize: token.fontSizeXS,
-                fontWeight: token.fontWeightStrong,
-                color: version === 1 ? '#FF4444' : '#2E8B3A',
-              }}
-            >
+            <Text strong style={{ color: version === 1 ? VERSION_COLORS.firered : VERSION_COLORS.leafgreen }}>
               {version === 0 ? 'Both' : version === 1 ? 'FireRed' : 'LeafGreen'} only
             </Text>
           )}
-          {price !== undefined && (
-            <Text type="secondary" style={{ fontSize: token.fontSizeXS }}>
-              ₽{price.toLocaleString()}
-            </Text>
-          )}
+          {price !== undefined && <Text type="secondary">₽{price.toLocaleString()}</Text>}
         </Flex>
       </Flex>
-      {location && (
-        <Text type="secondary" style={{ fontSize: token.fontSizeXS, marginTop: token.paddingXS }}>
-          📍 {location}
-        </Text>
-      )}
-      {hint && (
-        <Text type="secondary" style={{ fontSize: token.fontSizeXS, fontStyle: 'italic' }}>
-          💡 {hint}
-        </Text>
-      )}
+      {location && <Text type="secondary" style={{ marginTop: token.paddingXS }}>📍 {location}</Text>}
+      {hint && <Text type="secondary" style={{ fontStyle: 'italic' }}>💡 {hint}</Text>}
       {give && receive && (
         <Flex align="center" gap={token.paddingXXS} style={{ marginTop: token.paddingXS }}>
           <Tag>{give}</Tag>
@@ -190,9 +157,7 @@ const SpecialSection = memo(function SpecialSection({ title, items, onSelectPoke
 
   return (
     <Flex vertical gap={token.paddingSM}>
-      <Title level={5} style={{ margin: 0, color: token.colorText }}>
-        {title}
-      </Title>
+      <Title level={5} style={{ margin: 0 }}>{title}</Title>
       <Flex wrap="wrap" gap={token.paddingSM}>
         {items.map((item, index) => (
           <SpecialPokemonCard
@@ -225,17 +190,7 @@ const GiftCard = memo(function GiftCard({ gift, onSelectPokemon }) {
   }, [gift.pokemon]);
 
   return (
-    <Flex
-      vertical
-      style={{
-        background: token.colorBgContainer,
-        border: `1px solid ${token.colorBorder}`,
-        borderRadius: token.borderRadius,
-        padding: token.paddingSM,
-        minWidth: 200,
-        flex: '1 1 200px',
-      }}
-    >
+    <Flex vertical style={{ borderRadius: token.borderRadius, padding: token.paddingSM, minWidth: 200, flex: '1 1 200px' }}>
       <Flex wrap="wrap" gap={token.paddingXXS}>
         {pokemonList.map((pokemon) => (
           <PokemonChip
@@ -249,12 +204,8 @@ const GiftCard = memo(function GiftCard({ gift, onSelectPokemon }) {
           />
         ))}
       </Flex>
-      <Text type="secondary" style={{ fontSize: token.fontSizeXS, marginTop: token.paddingXS }}>
-        📍 {gift.location}
-      </Text>
-      <Text type="secondary" style={{ fontSize: token.fontSizeXS, fontStyle: 'italic' }}>
-        💡 {gift.hint}
-      </Text>
+      <Text type="secondary" style={{ marginTop: token.paddingXS }}>📍 {gift.location}</Text>
+      <Text type="secondary" style={{ fontStyle: 'italic' }}>💡 {gift.hint}</Text>
     </Flex>
   );
 });
@@ -264,16 +215,10 @@ const GiftsSection = memo(function GiftsSection({ gifts, onSelectPokemon }) {
 
   return (
     <Flex vertical gap={token.paddingSM}>
-      <Title level={5} style={{ margin: 0, color: token.colorText }}>
-        Gift Pokémon
-      </Title>
+      <Title level={5} style={{ margin: 0 }}>Gift Pokémon</Title>
       <Flex wrap="wrap" gap={token.paddingSM}>
         {gifts.map((gift, index) => (
-          <GiftCard
-            key={`gift-${index}`}
-            gift={gift}
-            onSelectPokemon={onSelectPokemon}
-          />
+          <GiftCard key={`gift-${index}`} gift={gift} onSelectPokemon={onSelectPokemon} />
         ))}
       </Flex>
     </Flex>
@@ -293,36 +238,19 @@ const MewCard = memo(function MewCard({ onSelectPokemon }) {
       vertical
       align="center"
       style={{
-        background: isCaught ? `${token.colorPrimary}08` : token.colorBgContainer,
+        background: isCaught ? `${token.colorPrimary}08` : undefined,
         border: `1px solid ${isCaught ? `${token.colorPrimary}40` : token.colorBorder}`,
         borderRadius: token.borderRadius,
         padding: token.paddingMD,
         maxWidth: 300,
       }}
     >
-      <Flex
-        justify="center"
-        align="center"
-        onClick={() => onSelectPokemon?.(151)}
-        style={{ cursor: 'pointer', position: 'relative' }}
-      >
+      <Flex justify="center" align="center" onClick={() => onSelectPokemon?.(151)} style={{ cursor: 'pointer', position: 'relative' }}>
         <Sprite id={151} size={48} isCaught={isCaught} mode={mode} />
-        {isShiny && (
-          <span style={{ position: 'absolute', top: -4, right: -4, fontSize: 14 }}>🌟</span>
-        )}
+        {isShiny && <span style={{ position: 'absolute', top: -4, right: -4 }}>🌟</span>}
       </Flex>
-      <Text strong style={{ marginTop: token.paddingXS }}>
-        Mew
-      </Text>
-      <Text
-        type="secondary"
-        style={{
-          fontSize: token.fontSizeXS,
-          textAlign: 'center',
-          marginTop: token.paddingXS,
-          fontStyle: 'italic',
-        }}
-      >
+      <Text strong style={{ marginTop: token.paddingXS }}>Mew</Text>
+      <Text type="secondary" style={{ textAlign: 'center', marginTop: token.paddingXS, fontStyle: 'italic' }}>
         {SPECIAL.mew.note}
       </Text>
     </Flex>

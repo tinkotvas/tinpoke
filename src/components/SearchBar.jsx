@@ -17,8 +17,6 @@ const SearchBar = memo(function SearchBar({
       align="center"
       gap={token.paddingXS}
       style={{
-        background: token.colorBgElevated,
-        borderBottom: `1px solid ${token.colorBorder}`,
         padding: `${token.paddingXS}px ${token.paddingLG}px`,
       }}
     >
@@ -28,7 +26,7 @@ const SearchBar = memo(function SearchBar({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         allowClear
-        prefix={<SearchOutlined style={{ color: token.colorTextSecondary }} />}
+        prefix={<SearchOutlined />}
         size="large"
         style={{ flex: 1 }}
       />

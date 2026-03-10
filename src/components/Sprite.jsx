@@ -1,5 +1,5 @@
 import { useState, useCallback, memo } from 'react';
-import { Flex, Typography, theme } from 'antd';
+import { Flex, Typography } from 'antd';
 
 const { Text } = Typography;
 
@@ -15,7 +15,6 @@ const Sprite = memo(function Sprite({
   style,
   imgStyle,
 }) {
-  const { token } = theme.useToken();
   const [spriteError, setSpriteError] = useState(false);
 
   const handleSpriteError = useCallback(() => {
@@ -45,7 +44,7 @@ const Sprite = memo(function Sprite({
         width: size,
         height: size,
         filter,
-        transition: `filter ${token.motionDurationMid}`,
+        transition: 'filter 0.2s ease',
         ...style,
       }}
     >
@@ -56,14 +55,9 @@ const Sprite = memo(function Sprite({
           style={{
             width: '100%',
             height: '100%',
-            border: `1px dashed ${token.colorBorder}`,
-            borderRadius: token.borderRadiusSM,
-            color: token.colorTextQuaternary,
-            fontSize: size > 48 ? token.fontSizeLG : token.fontSizeSM,
-            fontWeight: token.fontWeightStrong,
           }}
         >
-          #{formattedNumber}
+          <Text type="secondary">#{formattedNumber}</Text>
         </Flex>
       ) : (
         <img

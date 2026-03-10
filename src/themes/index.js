@@ -12,7 +12,9 @@ export const fireRedTheme = {
     fontSize: 14,
     colorBgContainer: '#1A1412',
     colorBgElevated: '#221A18',
+    colorBgLayout: '#0F0C0A',
     colorBorder: '#3A2A25',
+    colorBorderSecondary: '#2A1F1C',
     colorText: '#FFF8F5',
     colorTextSecondary: '#D4BCB0',
     colorTextTertiary: '#9A8880',
@@ -32,6 +34,19 @@ export const fireRedTheme = {
       colorBgElevated: '#221A18',
       colorBgContainer: '#221A18',
     },
+    Modal: {
+      contentBg: '#1A1412',
+      headerBg: '#1A1412',
+    },
+    Table: {
+      headerBg: 'transparent',
+      rowHoverBg: 'rgba(255,107,74,0.08)',
+      borderColor: '#3A2A25',
+    },
+    Collapse: {
+      headerBg: 'transparent',
+      contentBg: 'transparent',
+    },
     Tag: {
       borderRadiusSM: 4,
     },
@@ -49,6 +64,13 @@ export const fireRedTheme = {
     FloatButton: {
       colorBgElevated: '#FF6B4A',
     },
+    Timeline: {
+      dotBg: '#FF6B4A',
+      tailColor: '#3A2A25',
+    },
+    Divider: {
+      colorSplit: '#3A2A25',
+    },
   },
 };
 
@@ -64,7 +86,9 @@ export const leafGreenTheme = {
     fontSize: 14,
     colorBgContainer: '#FFFFFF',
     colorBgElevated: '#F6FAF6',
+    colorBgLayout: '#F1F8F1',
     colorBorder: '#C8E6C9',
+    colorBorderSecondary: '#D4EAD4',
     colorText: '#1A2E1A',
     colorTextSecondary: '#4A6848',
     colorTextTertiary: '#6B8868',
@@ -84,6 +108,19 @@ export const leafGreenTheme = {
       colorBgElevated: '#F6FAF6',
       colorBgContainer: '#F6FAF6',
     },
+    Modal: {
+      contentBg: '#FFFFFF',
+      headerBg: '#FFFFFF',
+    },
+    Table: {
+      headerBg: 'transparent',
+      rowHoverBg: 'rgba(76,175,80,0.08)',
+      borderColor: '#C8E6C9',
+    },
+    Collapse: {
+      headerBg: 'transparent',
+      contentBg: 'transparent',
+    },
     Tag: {
       borderRadiusSM: 4,
     },
@@ -100,6 +137,13 @@ export const leafGreenTheme = {
     },
     FloatButton: {
       colorBgElevated: '#4CAF50',
+    },
+    Timeline: {
+      dotBg: '#4CAF50',
+      tailColor: '#E8F0E8',
+    },
+    Divider: {
+      colorSplit: '#C8E6C9',
     },
   },
 };

@@ -1,7 +1,7 @@
 import { useMemo, useCallback, memo } from 'react';
 import { Drawer, Flex, Typography, Tag, Button, Progress, Table, theme, Divider, Tooltip, Popconfirm } from 'antd';
 import { CheckOutlined, StarFilled, CloseOutlined, LinkOutlined } from '@ant-design/icons';
-import { KANTO, KANTO_MAP, getTypeColor, getTypeIcon } from '../data/pokemon.js';
+import { KANTO_MAP } from '../data/pokemon.js';
 import { EVOLUTIONS } from '../data/evolutions.js';
 import { LOCATIONS } from '../data/locations.js';
 import { STATS, STAT_LABELS } from '../data/stats.js';
@@ -13,12 +13,19 @@ import TypeTag from './TypeTag.jsx';
 
 const { Title, Text } = Typography;
 
+// Stat colors are semantic (red=bad, green=good) - not from theme
 function getStatColor(value) {
   if (value < 50) return '#ff4d4f';
   if (value < 80) return '#fa8c16';
   if (value < 100) return '#52c41a';
   return '#1890ff';
 }
+
+// Version colors are game-specific - not from theme
+const VERSION_COLORS = {
+  firered: '#FF4444',
+  leafgreen: '#2E8B3A',
+};
 
 const EvolutionStage = memo(function EvolutionStage({ 
   id, 
@@ -40,14 +47,7 @@ const EvolutionStage = memo(function EvolutionStage({
   return (
     <Flex vertical align="center" gap={token.paddingXXS}>
       {method && (
-        <Text
-          style={{
-            fontSize: token.fontSizeSM,
-            color: token.colorTextTertiary,
-            textAlign: 'center',
-            maxWidth: 80,
-          }}
-        >
+        <Text type="tertiary" style={{ textAlign: 'center', maxWidth: 80 }}>
           {method}
         </Text>
       )}
@@ -61,15 +61,13 @@ const EvolutionStage = memo(function EvolutionStage({
           borderRadius: token.borderRadius,
           border: isCurrent ? `2px solid ${token.colorPrimary}` : '2px solid transparent',
           background: isCurrent ? `${token.colorPrimary}10` : 'transparent',
-          transition: `all ${token.motionDurationFast}`,
           opacity: isCurrent ? 1 : 0.9,
         }}
       >
         <Sprite id={id} size={48} isCaught={isCaught} mode={mode} />
         <Text
+          strong={isCurrent}
           style={{
-            fontSize: token.fontSizeSM,
-            fontWeight: isCurrent ? token.fontWeightStrong : undefined,
             color: isCaught ? token.colorText : token.colorTextQuaternary,
             marginTop: 2,
           }}
@@ -82,7 +80,7 @@ const EvolutionStage = memo(function EvolutionStage({
           ))}
         </Flex>
         {isCaught && (
-          <Text style={{ fontSize: 10, color: isShiny ? '#FFD700' : token.colorPrimary }}>
+          <Text style={{ color: isShiny ? '#FFD700' : token.colorPrimary }}>
             {isShiny ? '🌟' : '✓'}
           </Text>
         )}
@@ -92,10 +90,7 @@ const EvolutionStage = memo(function EvolutionStage({
 });
 
 const ArrowRight = memo(function ArrowRight() {
-  const { token } = theme.useToken();
-  return (
-    <Text style={{ color: token.colorTextQuaternary, fontSize: 16 }}>→</Text>
-  );
+  return <Text type="quaternary">→</Text>;
 });
 
 const EvolutionChain = memo(function EvolutionChain({ 

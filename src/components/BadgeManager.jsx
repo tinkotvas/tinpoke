@@ -16,27 +16,15 @@ export default function BadgeManager({ badges, onToggle }) {
   }, [onToggle]);
 
   return (
-    <Flex
-      vertical
-      style={{
-        padding: token.paddingLG,
-        gap: token.paddingMD,
-      }}
-    >
+    <Flex vertical gap={token.paddingMD} style={{ padding: token.paddingLG }}>
       <Flex vertical align="center" gap={token.paddingXS}>
-        <Title level={4} style={{ margin: 0, color: token.colorText }}>
-          Kanto Gym Badges
-        </Title>
+        <Title level={4} style={{ margin: 0 }}>Kanto Gym Badges</Title>
         <Text type="secondary" style={{ letterSpacing: 2 }}>
           CLICK TO TOGGLE EARNED STATUS
         </Text>
       </Flex>
 
-      <Flex
-        wrap="wrap"
-        gap={token.paddingMD}
-        justify="center"
-      >
+      <Flex wrap="wrap" gap={token.paddingMD} justify="center">
         {BADGES.map((badge) => {
           const earned = badges?.has(badge.id);
           return (
@@ -51,12 +39,6 @@ export default function BadgeManager({ badges, onToggle }) {
               className="badge-card"
               style={{
                 width: 140,
-                background: earned
-                  ? `linear-gradient(145deg, ${token.colorPrimary}15, ${token.colorPrimary}08)`
-                  : token.colorBgContainer,
-                border: earned
-                  ? `1px solid ${token.colorPrimary}40`
-                  : `1px solid ${token.colorBorder}`,
                 cursor: 'pointer',
                 opacity: earned ? 1 : 0.6,
               }}
@@ -81,23 +63,11 @@ export default function BadgeManager({ badges, onToggle }) {
                   {badge.icon}
                 </span>
 
-                <Title
-                  level={5}
-                  style={{
-                    margin: 0,
-                    color: earned ? token.colorText : token.colorTextQuaternary,
-                  }}
-                >
+                <Title level={5} style={{ margin: 0 }}>
                   {badge.name}
                 </Title>
 
-                <Text
-                  type="secondary"
-                  style={{
-                    fontSize: token.fontSizeXS,
-                    letterSpacing: 1,
-                  }}
-                >
+                <Text type="secondary" style={{ letterSpacing: 1 }}>
                   {badge.leader}
                 </Text>
 
@@ -105,12 +75,10 @@ export default function BadgeManager({ badges, onToggle }) {
                   <Tooltip title={badge.type}>
                     <span
                       style={{
-                        fontSize: token.fontSizeSM,
                         padding: '2px 6px',
                         borderRadius: token.borderRadiusSM,
-                        background: token.colorPrimaryBg,
-                        textTransform: 'capitalize',
                         backgroundColor: TYPE_HEX_COLORS[badge.type],
+                        textTransform: 'capitalize',
                       }}
                     >
                       {TYPE_ICONS[badge.type]}
