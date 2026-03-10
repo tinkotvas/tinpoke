@@ -1,5 +1,5 @@
 import { memo, useRef, useCallback, useState, useEffect, useMemo } from 'react';
-import { Flex, Button, Slider, Select, Typography, theme, Segmented, Popover, InputNumber, Space } from 'antd';
+import { Flex, Button, Slider, Select, Typography, theme, Segmented, Popover, InputNumber, Space, Spin } from 'antd';
 import {
   PlayCircleOutlined,
   PauseCircleOutlined,
@@ -41,21 +41,30 @@ const OBJECT_POSITION = {
   right:  'right center',
 };
 
-const createVideoStyle = (token, alignment, crop) => ({
-  width: '100%',
-  height: '100%',
+const createVideoWrapperStyle = () => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  overflow: 'hidden',
+  background: '#070707',
+});
+
+const createVideoStyle = (alignment, crop) => ({
+  position: 'absolute',
+  top: crop.top ? -crop.top : 0,
+  left: crop.left ? -crop.left : 0,
+  width: `calc(100% + ${crop.left + crop.right}px)`,
+  height: `calc(100% + ${crop.top + crop.bottom}px)`,
   objectFit: 'contain',
   objectPosition: OBJECT_POSITION[alignment] ?? 'center center',
-  objectViewBox: `inset(${crop.top}px ${crop.right}px ${crop.bottom}px ${crop.left}px)`,
   display: 'block',
-  willChange: 'transform',
   imageRendering: 'pixelated',
-  background: token.colorBgLayout,
 });
 
 const createContainerStyle = (token) => ({
   height: '100%',
-  background: token.colorBgLayout,
   position: 'relative',
   overflow: 'hidden',
   contain: 'layout paint',
@@ -239,7 +248,8 @@ const VideoPlayer = memo(function VideoPlayer() {
     statusText = error;
   }
 
-  const videoStyle = useMemo(() => createVideoStyle(token, alignment, crop), [token, alignment, crop]);
+  const videoWrapperStyle = useMemo(() => createVideoWrapperStyle(), []);
+  const videoStyle = useMemo(() => createVideoStyle(alignment, crop), [alignment, crop]);
   const containerStyle = useMemo(() => createContainerStyle(token), [token]);
 
   return (
@@ -248,13 +258,16 @@ const VideoPlayer = memo(function VideoPlayer() {
       vertical
       style={containerStyle}
     >
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        muted
-        style={videoStyle}
-      />
+      {/* Video wrapper for cropping */}
+      <div style={videoWrapperStyle}>
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          style={videoStyle}
+        />
+      </div>
 
       {!isStreaming && (
         <Flex
@@ -274,7 +287,7 @@ const VideoPlayer = memo(function VideoPlayer() {
           )}
 
           {isLoading && (
-            <Text style={{ color: token.colorText, fontSize: 15 }}>{statusText}</Text>
+            <Spin size="large" description={statusText} />
           )}
 
           {status === 'error' && (

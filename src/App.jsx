@@ -83,9 +83,9 @@ function TheaterModeExit({ onExit }) {
 
 function AppContent() {
   const { token } = theme.useToken();
-  
+
   // Stores - use useShallow for batched subscriptions
-  const { caught, shiny, toggle, toggleShiny, getCaughtTime, importData } = 
+  const { caught, shiny, toggle, toggleShiny, getCaughtTime, importData } =
     useCaughtStore(useShallow((s) => ({
       caught: s.caught,
       shiny: s.shiny,
@@ -94,23 +94,23 @@ function AppContent() {
       getCaughtTime: s.getCaughtTime,
       importData: s.importData,
     })));
-  
-  const { badges, toggleBadge, importBadges } = 
+
+  const { badges, toggleBadge, importBadges } =
     useBadgeStore(useShallow((s) => ({
       badges: s.badges,
       toggleBadge: s.toggle,
       importBadges: s.importBadges,
     })));
-  
-  const { theme: theme_mode, toggleTheme, soundEnabled, setSoundEnabled } = 
+
+  const { theme: theme_mode, toggleTheme, soundEnabled, setSoundEnabled } =
     useSettingsStore(useShallow((s) => ({
       theme: s.theme,
       toggleTheme: s.toggleTheme,
       soundEnabled: s.soundEnabled,
       setSoundEnabled: s.setSoundEnabled,
     })));
-  
-  const { filter, setFilter, statusFilter, setStatusFilter, sortBy, setSortBy, selectedTypes, setSelectedTypes } = 
+
+  const { filter, setFilter, statusFilter, setStatusFilter, sortBy, setSortBy, selectedTypes, setSelectedTypes } =
     useFilterStore(useShallow((s) => ({
       filter: s.filter,
       setFilter: s.setFilter,
@@ -121,11 +121,11 @@ function AppContent() {
       selectedTypes: s.selectedTypes,
       setSelectedTypes: s.setSelectedTypes,
     })));
-  
+
   // Hooks
   const { showConfetti, contextHolder } = useNotifications(caught.size, badges);
   const { playCatch, playUncatch, playShiny, playVictory } = useSound();
-  
+
   // Local state
   const [search, setSearch] = useState('');
   const [selectedPokemon, setSelectedPokemon] = useState(null);
@@ -150,7 +150,7 @@ function AppContent() {
     });
 
     if (selectedTypes.size > 0) {
-      result = result.filter(([, , types]) => 
+      result = result.filter(([, , types]) =>
         types.some(t => selectedTypes.has(t))
       );
     }
@@ -224,154 +224,154 @@ function AppContent() {
   }, []);
 
   return (
-    <ConfigProvider 
+    <ConfigProvider
       theme={currentTheme}
       tooltip={{
         mouseLeaveDelay: 0,
       }}
     >
       <AntApp>
-      {contextHolder}
-      <Flex
-        vertical
-        style={{ height: '100vh', width: '100%', overflow: 'hidden' }}
-      >
-        {!theaterMode && (
-          <Header 
-            caught={caught.size} 
-            shiny={shiny} 
-            total={KANTO_TOTAL} 
-            badges={badges} 
-            onImport={handleImport} 
-            caughtMap={caught}
-            soundEnabled={soundEnabled}
-            onSoundToggle={setSoundEnabled}
-            filter={filter}
-            onFilterChange={handleFilterChange}
-            theaterMode={theaterMode}
-            onTheaterModeToggle={() => setTheaterMode(true)}
-            theme={theme_mode}
-            onThemeToggle={toggleTheme}
-          />
-        )}
-
-        {/* VideoPlayer - always visible as base layer */}
-        <Flex vertical flex={1} style={{ overflow: 'hidden' }}>
-          <VideoPlayer />
-        </Flex>
-
-        {/* Theater mode exit button */}
-        {theaterMode && <TheaterModeExit onExit={() => setTheaterMode(false)} />}
-
-        {/* Modal overlay for all non-switch tabs */}
-        <Modal
-          title={
-            filter === 'pokedex' ? 'Pokédex' :
-            filter === 'badges' ? 'Badges' :
-            filter === 'routes' ? 'Routes' :
-            filter === 'stats' ? 'Stats' : ''
-          }
-          open={filter !== 'switch' && !theaterMode}
-          onCancel={() => setFilter('switch')}
-          footer={null}
-          width="90%"
-          centered
-          style={{ maxWidth: 1400 }}
-          styles={{ body: { height: '70vh', overflowY: 'auto', display: 'flex', flexDirection: 'column' } }}
+        {contextHolder}
+        <Flex
+          vertical
+          style={{ height: '100vh', width: '100%', overflow: 'hidden', }}
         >
-          {filter === 'badges' && (
-            <BadgeManager badges={badges} onToggle={toggleBadge} />
-          )}
-
-          {filter === 'routes' && (
-            <RouteChecklist
-              caught={caught}
+          {!theaterMode && (
+            <Header
+              caught={caught.size}
               shiny={shiny}
-              onSelectPokemon={handleSelectPokemon}
-            />
-          )}
-
-          {filter === 'stats' && (
-            <StatsView
-              caught={caught}
-              shiny={shiny}
+              total={KANTO_TOTAL}
               badges={badges}
-              getCaughtTime={getCaughtTime}
+              onImport={handleImport}
+              caughtMap={caught}
+              soundEnabled={soundEnabled}
+              onSoundToggle={setSoundEnabled}
+              filter={filter}
+              onFilterChange={handleFilterChange}
+              theaterMode={theaterMode}
+              onTheaterModeToggle={() => setTheaterMode(true)}
+              theme={theme_mode}
+              onThemeToggle={toggleTheme}
             />
           )}
 
-          {filter === 'pokedex' && (
-            <Flex vertical style={{ height: 'calc(100% - 20px)' }}>
-              <SearchBar 
-                value={search} 
-                onChange={setSearch} 
-              />
-
-              <FilterPanel
-                sortBy={sortBy}
-                onSortChange={setSortBy}
-                selectedTypes={selectedTypes}
-                onTypesChange={setSelectedTypes}
-                statusFilter={statusFilter}
-                onStatusChange={setStatusFilter}
-              />
-
-              <div style={{ flex: 1, minHeight: 0 }}>
-                <PokemonGrid 
-                  pokemon={filtered} 
-                  caught={caught} 
-                  shiny={shiny}
-                  onToggle={handleToggleWithSound} 
-                  onToggleShiny={handleToggleShinyWithSound}
-                  onSelect={handleSelectPokemon}
-                />
-              </div>
-            </Flex>
-          )}
-        </Modal>
-
-        <PokemonDetail
-          pokemonId={selectedPokemon}
-          onClose={handleCloseDetail}
-          onSelect={handleSelectPokemon}
-        />
-
-        <Confetti show={showConfetti} />
-
-        {/* Route overlay - visible when routes are selected */}
-        <RouteOverlay onSelectPokemon={handleSelectPokemon} />
-
-        <Modal
-          title={<Title level={4} style={{ margin: 0 }}>Keyboard Shortcuts</Title>}
-          open={showHelpModal}
-          onCancel={() => setShowHelpModal(false)}
-          footer={null}
-          width={420}
-        >
-          <Flex vertical gap={token.paddingSM}>
-            <Flex justify="space-between">
-              <Text>Open this help</Text>
-              <Text keyboard>?</Text>
-            </Flex>
-            <Flex justify="space-between">
-              <Text>Catch / Release</Text>
-              <Text keyboard>Shift + Click</Text>
-            </Flex>
-            <Flex justify="space-between">
-              <Text>Toggle Shiny</Text>
-              <Text keyboard>Shift + Click</Text>
-            </Flex>
-            <Flex justify="space-between">
-              <Text>Navigate cards</Text>
-              <Text keyboard>Tab</Text>
-            </Flex>
-            <Flex justify="space-between">
-              <Text>Open details</Text>
-              <Text keyboard>Enter</Text>
-            </Flex>
+          {/* VideoPlayer - always visible as base layer */}
+          <Flex vertical flex={1} style={{ overflow: 'hidden' }}>
+            <VideoPlayer />
           </Flex>
-        </Modal>
-      </Flex>
+
+          {/* Theater mode exit button */}
+          {theaterMode && <TheaterModeExit onExit={() => setTheaterMode(false)} />}
+
+          {/* Modal overlay for all non-switch tabs */}
+          <Modal
+            title={
+              filter === 'pokedex' ? 'Pokédex' :
+                filter === 'badges' ? 'Badges' :
+                  filter === 'routes' ? 'Routes' :
+                    filter === 'stats' ? 'Stats' : ''
+            }
+            open={filter !== 'switch' && !theaterMode}
+            onCancel={() => setFilter('switch')}
+            footer={null}
+            width="90%"
+            centered
+            style={{ maxWidth: 1400 }}
+            styles={{ body: { height: '70vh', overflowY: 'auto', display: 'flex', flexDirection: 'column' } }}
+          >
+            {filter === 'badges' && (
+              <BadgeManager badges={badges} onToggle={toggleBadge} />
+            )}
+
+            {filter === 'routes' && (
+              <RouteChecklist
+                caught={caught}
+                shiny={shiny}
+                onSelectPokemon={handleSelectPokemon}
+              />
+            )}
+
+            {filter === 'stats' && (
+              <StatsView
+                caught={caught}
+                shiny={shiny}
+                badges={badges}
+                getCaughtTime={getCaughtTime}
+              />
+            )}
+
+            {filter === 'pokedex' && (
+              <Flex vertical style={{ height: 'calc(100% - 20px)' }}>
+                <SearchBar
+                  value={search}
+                  onChange={setSearch}
+                />
+
+                <FilterPanel
+                  sortBy={sortBy}
+                  onSortChange={setSortBy}
+                  selectedTypes={selectedTypes}
+                  onTypesChange={setSelectedTypes}
+                  statusFilter={statusFilter}
+                  onStatusChange={setStatusFilter}
+                />
+
+                <div style={{ flex: 1, minHeight: 0 }}>
+                  <PokemonGrid
+                    pokemon={filtered}
+                    caught={caught}
+                    shiny={shiny}
+                    onToggle={handleToggleWithSound}
+                    onToggleShiny={handleToggleShinyWithSound}
+                    onSelect={handleSelectPokemon}
+                  />
+                </div>
+              </Flex>
+            )}
+          </Modal>
+
+          <PokemonDetail
+            pokemonId={selectedPokemon}
+            onClose={handleCloseDetail}
+            onSelect={handleSelectPokemon}
+          />
+
+          <Confetti show={showConfetti} />
+
+          {/* Route overlay - visible when routes are selected */}
+          <RouteOverlay onSelectPokemon={handleSelectPokemon} />
+
+          <Modal
+            title={<Title level={4} style={{ margin: 0 }}>Keyboard Shortcuts</Title>}
+            open={showHelpModal}
+            onCancel={() => setShowHelpModal(false)}
+            footer={null}
+            width={420}
+          >
+            <Flex vertical gap={token.paddingSM}>
+              <Flex justify="space-between">
+                <Text>Open this help</Text>
+                <Text keyboard>?</Text>
+              </Flex>
+              <Flex justify="space-between">
+                <Text>Catch / Release</Text>
+                <Text keyboard>Shift + Click</Text>
+              </Flex>
+              <Flex justify="space-between">
+                <Text>Toggle Shiny</Text>
+                <Text keyboard>Shift + Click</Text>
+              </Flex>
+              <Flex justify="space-between">
+                <Text>Navigate cards</Text>
+                <Text keyboard>Tab</Text>
+              </Flex>
+              <Flex justify="space-between">
+                <Text>Open details</Text>
+                <Text keyboard>Enter</Text>
+              </Flex>
+            </Flex>
+          </Modal>
+        </Flex>
       </AntApp>
     </ConfigProvider>
   );
